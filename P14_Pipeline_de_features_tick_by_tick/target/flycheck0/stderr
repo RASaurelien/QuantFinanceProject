@@ -1,0 +1,5 @@
+error: can't find bin `tier2_tick_pipeline` at path `C:\Users\rasqu\Desktop\Quant_ProjectGit\P14_Pipeline_de_features_tick_by_tick\main.rs`
+ --> C:\Users\rasqu\Desktop\Quant_ProjectGit\P14_Pipeline_de_features_tick_by_tick\Cargo.toml
+error: can't find bin `tier2_tick_pipeline` at path `C:\Users\rasqu\Desktop\Quant_ProjectGit\P14_Pipeline_de_features_tick_by_tick\main.rs`
+ --> C:\Users\rasqu\Desktop\Quant_ProjectGit\P14_Pipeline_de_features_tick_by_tick\Cargo.toml
+error: could not compile due to 2 previous target resolution errors

@@ -1,0 +1,12 @@
+[package]
+name = "tier2_tick_pipeline"
+version = "0.1.0"
+edition = "2021"
+
+[[bin]]
+name = "tier2_tick_pipeline"
+path = "main.rs"
+
+[dependencies]
+rand = { version = "0.8", features = ["std_rng"] }
+rand_distr = "0.4"
