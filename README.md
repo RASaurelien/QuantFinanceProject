@@ -17,37 +17,37 @@ I used GitHub Copilot to refine certain parts, though it was mainly used for deb
 
 | # | Project | Language(s) | Focus |
 |---|---|---|---|
-| P0 | Lead-lag matrix (Hayashi-Yoshida) | Python, Rust | ~280x speedup estimator |
-| P1 | Pricing engine BS / Monte Carlo / Greeks | C++ (OpenMP) | Option pricing, parallelized |
-| P2 | PDE solver, American options | C++ | Crank-Nicolson |
-| P3 | Vol surface calibration (SVI / SSVI) | Python | Arbitrage-free, Dupire local vol |
-| P4 | Realized volatility (TSRV) | Rust | Noise-robust estimator |
-| P5 | CVA/DVA calculator (Hull-White) | Python | |
-| P6 | Markowitz & Black-Litterman | Python, R | Portfolio optimization |
-| P7 | Econometrics (GARCH, cointegration, VAR) | R | |
-| P8 | Vol regime prediction (ML & SHAP) | Python | |
-| P9 | Denoising (RMT, Marchenko-Pastur) | Python | |
-| P10 | VaR / Expected Shortfall + Kupiec test | Python | |
-| P11 | Event-driven backtesting engine | Rust, Python | |
-| P12 | Autocall pricer | VBA, Python | |
-| P13 | Multi-agent market (Cont-Bouchaud percolation) | Python | |
-| P14 | Tick-by-tick feature pipeline | Rust, Python | |
-| P15 | Bond toolkit (duration, convexity) | VBA, Python | |
-| P16 | Brownian reflection principle | Python | |
-| P17 | Tiny library | C++ | |
-| P18 | Q-learning trading agent | Python | |
-| P19 | Factor research (Fama-MacBeth) | Python | |
-| P20 | Event study (PEAD) | Python | |
-| P21 | Information Coefficient decay | Python | |
-| P22 | Pairs trading (mean reversion) | Python | Universe scan + risk management |
-| P23 | Market making, inventory (Avellaneda-Stoikov) | Python | |
-| P24 | P&L attribution, options market maker | Python | |
-| P25 | Pricing/hedging via path signatures | Python | Rough path theory |
-| P26 | Rough volatility | Python | |
-| P27 | Deep hedging | Python | |
-| P28 | Optimal execution, market impact | Python | |
-| P29 | Order book modeling (Hawkes) | Python | |
-| P30 | Live vol surface | Python | yfinance, real-time SVI/SSVI 3D |
+| P0 | Lead-lag matrix (Hayashi-Yoshida) | Python, Rust | Async tick correlation, ~280x speedup (Rust vs Python) |
+| P1 | Pricing engine BS / Monte Carlo / Greeks | C++ (OpenMP) | Closed-form BSM vs parallel MC, full Greeks on both |
+| P2 | PDE solver, American options | C++ | Crank-Nicolson finite differences + early exercise (Brennan-Schwartz) |
+| P3 | Vol surface calibration (SVI / SSVI) | Python | Implied vol → SVI smile per maturity → no-arbitrage check → 3D surface |
+| P4 | Realized volatility (TSRV) | Rust | Two-Scale RV vs naive RV, robust to microstructure noise |
+| P5 | CVA/DVA calculator (Hull-White) | Python | MC exposure simulation, one-factor short-rate model |
+| P6 | Markowitz & Black-Litterman | Python, R | Python efficient frontier feeds R's Bayesian Black-Litterman |
+| P7 | Econometrics (GARCH, cointegration, VAR) | R | GARCH MLE, ADF, VAR — all hand-coded, no CRAN packages |
+| P8 | Vol regime prediction (ML & SHAP) | Python | Calm/stress classifier + SHAP interpretability |
+| P9 | Denoising (RMT, Marchenko-Pastur) | Python | Spectral denoising, validated via min-variance portfolio (-28% variance) |
+| P10 | VaR / Expected Shortfall + Kupiec test | Python | Gaussian/historical/MC VaR, rolling out-of-sample backtest + Kupiec POF |
+| P11 | Event-driven backtesting engine | Rust, Python | True FIFO event queue, momentum vs mean-reversion under regime change |
+| P12 | Autocall pricer | VBA, Python | Autocall MC pricer (Python) + client-facing Excel/VBA sheet |
+| P13 | Multi-agent market (Cont-Bouchaud percolation) | Python | Stylized facts (fat tails, vol clustering) from agent percolation, no rationality assumption |
+| P14 | Tick-by-tick feature pipeline | Rust, Python | Streaming microprice/OFI/RV features, O(1)/tick, tested to 5M ticks |
+| P15 | Bond toolkit (duration, convexity) | VBA, Python | Macaulay/modified duration, convexity — Python validates VBA formulas |
+| P16 | Brownian reflection principle | Python | MC validation of max-process and first-passage-time laws |
+| P17 | Tiny library | C++ | Compile-time generic MC engine (templates) vs virtual dispatch |
+| P18 | Q-learning trading agent | Python | Tabular Q-learning, honest out-of-sample eval (separate seeds) |
+| P19 | Factor research (Fama-MacBeth) | Python | Two-step regressions, Newey-West SEs, placebo factor as control |
+| P20 | Event study (PEAD) | Python | MacKinlay event-study methodology on post-earnings drift |
+| P21 | Information Coefficient decay | Python | How long a predictive signal retains forecasting power |
+| P22 | Pairs trading (mean reversion) | Python | Universe-wide cointegration scan + risk-managed backtest (stop-loss, vol sizing) |
+| P23 | Market making, inventory (Avellaneda-Stoikov) | Python | Inventory-aware quoting vs naive fixed spread, matched MC sessions |
+| P24 | P&L attribution, options market maker | Python | Delta-hedged option P&L split into Delta/Gamma/Theta/Vega |
+| P25 | Pricing/hedging via path signatures | Python | Rough-vol hedging via linear regression on signatures, hand-coded |
+| P26 | Rough volatility | Python | Rough Heston calibration via fractional Riccati equation |
+| P27 | Deep hedging | ? | No README yet |
+| P28 | Optimal execution, market impact | Python | Optimal execution under transient impact, QP solved via KKT |
+| P29 | Order book modeling (Hawkes) | Python | Order book via Hawkes processes, hand-coded simulation + MLE |
+| P30 | Live vol surface | Python | Live Yahoo Finance feed → SVI/SSVI surface + Dupire/MC pricing |
 
 ABOUT ME:
 My interest in quantitative finance began in early 2026 (around late January / early February).
