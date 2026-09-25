@@ -1,0 +1,82 @@
+\chapter{Pricing Engine, Black-\/\+Scholes \& Monte Carlo (C++) }
+\hypertarget{md__r_e_a_d_m_e}{}\label{md__r_e_a_d_m_e}\index{Pricing Engine, Black-\/Scholes \textbackslash{}\& Monte Carlo (C++)@{Pricing Engine, Black-\/Scholes \textbackslash{}\& Monte Carlo (C++)}}
+\label{md__r_e_a_d_m_e_autotoc_md0}%
+\Hypertarget{md__r_e_a_d_m_e_autotoc_md0}%
+
+
+Moteur de pricing d\textquotesingle{}options vanilles européennes en C++17, comparant un pricer analytique (Black-\/\+Scholes-\/\+Merton fermé) à un pricer par simulation Monte Carlo parallélisé, avec calcul complet des Greeks (Delta, Gamma, Vega, Theta, Rho) sur les deux moteurs.\hypertarget{md__r_e_a_d_m_e_autotoc_md1}{}\doxysection{\texorpdfstring{Pourquoi ce projet}{Pourquoi ce projet}}\label{md__r_e_a_d_m_e_autotoc_md1}
+Il valide trois choses en une fois :
+
+
+\begin{DoxyEnumerate}
+\item Le prix Monte Carlo {\bfseries{converge}} vers le prix fermé de Black-\/\+Scholes (validation croisée).
+\item Le moteur est {\bfseries{optimisé}} : antithetic variates + Common Random Numbers pour les Greeks + parallélisation Open\+MP.
+\item Le code est {\bfseries{réutilisable}} : {\ttfamily Monte\+Carlo::\+price()} fonctionne pour n\textquotesingle{}importe quel payoff vanille sans formule fermée, peut servir de base pour de futurs projets sur des options exotiques.
+\end{DoxyEnumerate}\hypertarget{md__r_e_a_d_m_e_autotoc_md2}{}\doxysection{\texorpdfstring{Modèle}{Modèle}}\label{md__r_e_a_d_m_e_autotoc_md2}
+Sous la mesure risque-\/neutre, le sous-\/jacent suit un mouvement brownien géométrique (GBM) :
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{dS\(\backslash\)\_t\ =\ (r\ -\/\ q)\ S\(\backslash\)\_t\ dt\ +\ sigma\ S\(\backslash\)\_t\ dW\(\backslash\)\_t}
+
+\end{DoxyCode}
+
+
+Le prix terminal se simule directement (sans discrétisation intermédiaire, car GBM a une solution exacte) :
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{S\(\backslash\)\_T\ =\ S0\ \(\backslash\)*\ exp\(\backslash\)[(r\ -\/\ q\ -\/\ 0.5\(\backslash\)*sigma\string^2)\(\backslash\)*T\ +\ sigma\(\backslash\)*sqrt(T)\(\backslash\)*Z],\ \ \ Z\ \(\backslash\)\string~\ N(0,1)}
+
+\end{DoxyCode}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md3}{}\doxysection{\texorpdfstring{Techniques de réduction de variance / performance}{Techniques de réduction de variance / performance}}\label{md__r_e_a_d_m_e_autotoc_md3}
+
+\begin{DoxyTable}{3}{}{}{1}
+\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Technique  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Où  &\SetCell{c,bg=\tableheadbgcolor,font=\bfseries}Effet  \\
+{\bfseries{Antithetic variates}}  &{\ttfamily simulate\+Sum()}  &Chaque tirage Z est couplé à -\/Z ; réduit la variance de l\textquotesingle{}estimateur de prix sans biais, à coût quasi nul.  \\
+{\bfseries{Common Random Numbers (CRN)}}  &{\ttfamily price\+With\+Greeks()}  &Les scénarios "{}bumpés"{} (S0+h, sigma+h, ...) réutilisent exactement les mêmes tirages aléatoires que le scénario de base → le bruit Monte Carlo s\textquotesingle{}annule dans la différence finie, donc les Greeks convergent bien plus vite que le prix brut.  \\
+{\bfseries{Parallélisation Open\+MP}}  &{\ttfamily simulate\+Sum()}  &Un flux RNG (mt19937\+\_\+64) indépendant par thread, sans verrou, avec réduction Open\+MP sur les sommes.  \\
+{\bfseries{-\/O3 -\/march=native}}  &{\ttfamily Makefile}  &Vectorisation SIMD et instructions spécifiques au CPU.  \\
+\end{DoxyTable}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md4}{}\doxysection{\texorpdfstring{autotoc\+\_\+md4}{autotoc\+\_\+md4}}\label{md__r_e_a_d_m_e_autotoc_md4}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md5}{}\doxysection{\texorpdfstring{Structure}{Structure}}\label{md__r_e_a_d_m_e_autotoc_md5}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{include/}
+\DoxyCodeLine{\ \ Option.hpp\ \ \ \ \ \ \ \ \#\ Structure\ du\ contrat\ +\ résultat\ de\ pricing}
+\DoxyCodeLine{\ \ BlackScholes.hpp\ \ \ \#\ Interface\ du\ pricer\ fermé}
+\DoxyCodeLine{\ \ MonteCarlo.hpp\ \ \ \ \ \ \#\ Interface\ du\ pricer\ par\ simulation}
+\DoxyCodeLine{src/}
+\DoxyCodeLine{\ \ BlackScholes.cpp\ \ \ \ \#\ Formules\ fermées\ (prix\ +\ Greeks\ analytiques)}
+\DoxyCodeLine{\ \ MonteCarlo.cpp\ \ \ \ \ \ \#\ Simulation\ GBM\ +\ Greeks\ par\ différences\ finies\ (CRN)}
+\DoxyCodeLine{\ \ main.cpp\ \ \ \ \ \ \ \ \ \ \ \ \#\ CLI,\ comparaison,\ timings}
+\DoxyCodeLine{Makefile}
+
+\end{DoxyCode}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md6}{}\doxysection{\texorpdfstring{autotoc\+\_\+md6}{autotoc\+\_\+md6}}\label{md__r_e_a_d_m_e_autotoc_md6}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md7}{}\doxysection{\texorpdfstring{Compilation \& usage}{Compilation \& usage}}\label{md__r_e_a_d_m_e_autotoc_md7}
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{make\ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \ \#\ compile\ avec\ -\/O3\ -\/march=native\ -\/fopenmp}
+\DoxyCodeLine{./pricer\ \(\backslash\)[nPaths]\ \(\backslash\)[S0]\ \(\backslash\)[K]\ \(\backslash\)[T]\ \(\backslash\)[r]\ \(\backslash\)[sigma]\ \(\backslash\)[q]\ \(\backslash\)[call|put]}
+\DoxyCodeLine{}
+\DoxyCodeLine{\#\ Exemple\ :\ call\ ATM,\ 2M\ chemins}
+\DoxyCodeLine{./pricer\ 2000000\ 100\ 100\ 0.5\ 0.03\ 0.20\ 0.0\ call}
+
+\end{DoxyCode}
+
+
+Tous les arguments sont optionnels (valeurs par défaut : call ATM 6 mois).\hypertarget{md__r_e_a_d_m_e_autotoc_md8}{}\doxysection{\texorpdfstring{autotoc\+\_\+md8}{autotoc\+\_\+md8}}\label{md__r_e_a_d_m_e_autotoc_md8}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md9}{}\doxysection{\texorpdfstring{Validation}{Validation}}\label{md__r_e_a_d_m_e_autotoc_md9}
+
+\begin{DoxyItemize}
+\item Écart Monte Carlo / Black-\/\+Scholes \texorpdfstring{$<$}{<} 1 erreur standard sur toutes les configurations testées (call/\+put, avec/\+sans dividende).
+\item Parité call-\/put vérifiée numériquement à 10⁻⁷ près : {\ttfamily C -\/ P = S0\textbackslash{}\texorpdfstring{$\ast$}{*}e\texorpdfstring{$^\wedge$}{\string^}(-\/qT) -\/ K\textbackslash{}\texorpdfstring{$\ast$}{*}e\texorpdfstring{$^\wedge$}{\string^}(-\/rT)}.
+\end{DoxyItemize}\hypertarget{md__r_e_a_d_m_e_autotoc_md10}{}\doxysection{\texorpdfstring{autotoc\+\_\+md10}{autotoc\+\_\+md10}}\label{md__r_e_a_d_m_e_autotoc_md10}
+\hypertarget{md__r_e_a_d_m_e_autotoc_md11}{}\doxysection{\texorpdfstring{Limites connues}{Limites connues}}\label{md__r_e_a_d_m_e_autotoc_md11}
+
+\begin{DoxyItemize}
+\item GBM à volatilité constante : pas de smile de volatilité (voir pour un projet de calibration SVI/\+\+SABR pour une extension réaliste).
+\item Options européennes uniquement, le projet suivant de la roadmap (EDP/\+différences finies) traite l\textquotesingle{}exercice anticipé américain.
+\item Les Greeks Monte Carlo sont estimés par différences finies : biaisés à l\textquotesingle{}ordre O(h²) près, ce qui est acceptable ici mais mériterait des pathwise/\+likelihood-\/ratio estimators dans une version plus avancée. 
+\end{DoxyItemize}

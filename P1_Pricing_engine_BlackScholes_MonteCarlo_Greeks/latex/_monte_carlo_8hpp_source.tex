@@ -1,0 +1,39 @@
+\doxysection{Monte\+Carlo.\+hpp}
+\hypertarget{_monte_carlo_8hpp_source}{}\label{_monte_carlo_8hpp_source}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ "{}Option.hpp"{}}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ ============================================================}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ \ MonteCarlo.hpp}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ \ Pricer\ par\ simulation\ sous\ mesure\ risque-\/neutre\ (modèle\ GBM).}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//\ \ Sert\ de\ validation\ croisée\ du\ pricer\ analytique,\ et\ surtout}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ de\ brique\ réutilisable\ pour\ des\ payoffs\ qui\ n'ont\ PAS\ de}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ \ formule\ fermée\ (options\ exotiques,\ futurs\ projets\ Tier\ 1/2).}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//}}
+\DoxyCodeLine{00011\ \textcolor{comment}{//\ \ Techniques\ de\ réduction\ de\ variance\ /\ performance\ :}}
+\DoxyCodeLine{00012\ \textcolor{comment}{//\ \ \ -\/\ Antithetic\ variates\ (paires\ Z\ /\ -\/Z)}}
+\DoxyCodeLine{00013\ \textcolor{comment}{//\ \ \ -\/\ Common\ Random\ Numbers\ (CRN)\ pour\ les\ Greeks\ par\ différences}}
+\DoxyCodeLine{00014\ \textcolor{comment}{//\ \ \ \ \ finies\ :\ on\ réutilise\ EXACTEMENT\ les\ mêmes\ tirages\ aléatoires}}
+\DoxyCodeLine{00015\ \textcolor{comment}{//\ \ \ \ \ entre\ le\ scénario\ "{}de\ base"{}\ et\ le\ scénario\ "{}bumpé"{},\ ce\ qui}}
+\DoxyCodeLine{00016\ \textcolor{comment}{//\ \ \ \ \ annule\ une\ grande\ partie\ du\ bruit\ de\ Monte\ Carlo\ dans\ la}}
+\DoxyCodeLine{00017\ \textcolor{comment}{//\ \ \ \ \ différence.}}
+\DoxyCodeLine{00018\ \textcolor{comment}{//\ \ \ -\/\ Parallélisation\ OpenMP\ avec\ un\ flux\ RNG\ indépendant\ par}}
+\DoxyCodeLine{00019\ \textcolor{comment}{//\ \ \ \ \ thread\ (pas\ de\ verrou,\ pas\ de\ contention).}}
+\DoxyCodeLine{00020\ \textcolor{comment}{//\ ============================================================}}
+\DoxyCodeLine{00021\ }
+\DoxyCodeLine{00022\ \textcolor{keyword}{namespace\ }MonteCarlo\ \{}
+\DoxyCodeLine{00023\ }
+\DoxyCodeLine{00024\ \ \ \ \ \textcolor{comment}{//\ Prix\ +\ écart-\/type\ de\ l'estimateur,\ sans\ les\ Greeks.}}
+\DoxyCodeLine{00025\ \ \ \ \ \textcolor{comment}{//\ nPaths\ doit\ être\ pair\ (paires\ antithétiques).}}
+\DoxyCodeLine{00026\ \ \ \ \ PricingResult\ price(\textcolor{keyword}{const}\ Option\&\ opt,\ \textcolor{keywordtype}{long}\ nPaths,\ \textcolor{keywordtype}{unsigned}\ seed\ =\ 42);}
+\DoxyCodeLine{00027\ }
+\DoxyCodeLine{00028\ \ \ \ \ \textcolor{comment}{//\ Prix\ +\ Greeks\ calculés\ par\ différences\ finies\ avec\ Common}}
+\DoxyCodeLine{00029\ \ \ \ \ \textcolor{comment}{//\ Random\ Numbers.\ Plus\ coûteux\ (plusieurs\ simulations\ bumpées)}}
+\DoxyCodeLine{00030\ \ \ \ \ \textcolor{comment}{//\ mais\ chaque\ Greek\ converge\ beaucoup\ plus\ vite\ que\ le\ prix}}
+\DoxyCodeLine{00031\ \ \ \ \ \textcolor{comment}{//\ brut\ grâce\ à\ l'annulation\ du\ bruit\ commun.}}
+\DoxyCodeLine{00032\ \ \ \ \ PricingResult\ priceWithGreeks(\textcolor{keyword}{const}\ Option\&\ opt,\ \textcolor{keywordtype}{long}\ nPaths,\ \textcolor{keywordtype}{unsigned}\ seed\ =\ 42);}
+\DoxyCodeLine{00033\ }
+\DoxyCodeLine{00034\ \}}
+
+\end{DoxyCode}

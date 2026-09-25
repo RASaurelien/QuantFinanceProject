@@ -1,0 +1,54 @@
+\doxysection{Option.\+hpp}
+\hypertarget{_option_8hpp_source}{}\label{_option_8hpp_source}
+\begin{DoxyCode}{0}
+\DoxyCodeLine{00001\ \textcolor{preprocessor}{\#pragma\ once}}
+\DoxyCodeLine{00002\ \textcolor{preprocessor}{\#include\ <stdexcept>}}
+\DoxyCodeLine{00003\ }
+\DoxyCodeLine{00004\ \textcolor{comment}{//\ ============================================================}}
+\DoxyCodeLine{00005\ \textcolor{comment}{//\ \ Option.hpp}}
+\DoxyCodeLine{00006\ \textcolor{comment}{//\ \ Représente\ un\ contrat\ d'option\ vanille\ européenne.}}
+\DoxyCodeLine{00007\ \textcolor{comment}{//\ \ Toutes\ les\ autres\ briques\ (pricers,\ calcul\ des\ Greeks)}}
+\DoxyCodeLine{00008\ \textcolor{comment}{//\ \ consomment\ cette\ structure\ :\ c'est\ le\ "{}contrat\ de\ données"{}}}
+\DoxyCodeLine{00009\ \textcolor{comment}{//\ \ du\ projet.}}
+\DoxyCodeLine{00010\ \textcolor{comment}{//\ ============================================================}}
+\DoxyCodeLine{00011\ }
+\DoxyCodeLine{00012\ \textcolor{keyword}{enum\ class}\ OptionType\ \{\ Call,\ Put\ \};}
+\DoxyCodeLine{00013\ }
+\DoxyCodeLine{00014\ \textcolor{keyword}{struct\ }Option\ \{}
+\DoxyCodeLine{00015\ \ \ \ \ \textcolor{keywordtype}{double}\ S0;\ \ \ \ \ \ \textcolor{comment}{//\ Prix\ spot\ du\ sous-\/jacent\ à\ t=0}}
+\DoxyCodeLine{00016\ \ \ \ \ \textcolor{keywordtype}{double}\ K;\ \ \ \ \ \ \ \textcolor{comment}{//\ Strike\ (prix\ d'exercice)}}
+\DoxyCodeLine{00017\ \ \ \ \ \textcolor{keywordtype}{double}\ T;\ \ \ \ \ \ \ \textcolor{comment}{//\ Maturité\ en\ années\ (ex\ :\ 0.5\ =\ 6\ mois)}}
+\DoxyCodeLine{00018\ \ \ \ \ \textcolor{keywordtype}{double}\ r;\ \ \ \ \ \ \ \textcolor{comment}{//\ Taux\ sans\ risque\ (continu,\ annualisé)}}
+\DoxyCodeLine{00019\ \ \ \ \ \textcolor{keywordtype}{double}\ sigma;\ \ \ \textcolor{comment}{//\ Volatilité\ annualisée\ du\ sous-\/jacent}}
+\DoxyCodeLine{00020\ \ \ \ \ \textcolor{keywordtype}{double}\ q;\ \ \ \ \ \ \ \textcolor{comment}{//\ Taux\ de\ dividende\ continu\ (0\ si\ pas\ de\ dividende)}}
+\DoxyCodeLine{00021\ \ \ \ \ OptionType\ type;}
+\DoxyCodeLine{00022\ }
+\DoxyCodeLine{00023\ \ \ \ \ Option(\textcolor{keywordtype}{double}\ S0\_,\ \textcolor{keywordtype}{double}\ K\_,\ \textcolor{keywordtype}{double}\ T\_,\ \textcolor{keywordtype}{double}\ r\_,}
+\DoxyCodeLine{00024\ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordtype}{double}\ sigma\_,\ \textcolor{keywordtype}{double}\ q\_,\ OptionType\ type\_)}
+\DoxyCodeLine{00025\ \ \ \ \ \ \ \ \ :\ S0(S0\_),\ K(K\_),\ T(T\_),\ r(r\_),\ sigma(sigma\_),\ q(q\_),\ type(type\_)}
+\DoxyCodeLine{00026\ \ \ \ \ \{}
+\DoxyCodeLine{00027\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ Garde-\/fous\ :\ on\ refuse\ de\ pricer\ un\ contrat\ mal\ spécifié}}
+\DoxyCodeLine{00028\ \ \ \ \ \ \ \ \ \textcolor{comment}{//\ plutôt\ que\ de\ laisser\ un\ NaN\ se\ propager\ silencieusement.}}
+\DoxyCodeLine{00029\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (S0\ <=\ 0.0\ ||\ K\ <=\ 0.0)}
+\DoxyCodeLine{00030\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::invalid\_argument(\textcolor{stringliteral}{"{}S0\ et\ K\ doivent\ être\ strictement\ positifs."{}});}
+\DoxyCodeLine{00031\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (T\ <=\ 0.0)}
+\DoxyCodeLine{00032\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::invalid\_argument(\textcolor{stringliteral}{"{}La\ maturité\ T\ doit\ être\ strictement\ positive."{}});}
+\DoxyCodeLine{00033\ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{if}\ (sigma\ <=\ 0.0)}
+\DoxyCodeLine{00034\ \ \ \ \ \ \ \ \ \ \ \ \ \textcolor{keywordflow}{throw}\ std::invalid\_argument(\textcolor{stringliteral}{"{}La\ volatilité\ sigma\ doit\ être\ strictement\ positive."{}});}
+\DoxyCodeLine{00035\ \ \ \ \ \}}
+\DoxyCodeLine{00036\ \};}
+\DoxyCodeLine{00037\ }
+\DoxyCodeLine{00038\ \textcolor{comment}{//\ Regroupe\ le\ prix\ +\ toutes\ les\ sensibilités\ (Greeks)\ d'un\ contrat.}}
+\DoxyCodeLine{00039\ \textcolor{comment}{//\ Retourné\ à\ la\ fois\ par\ le\ pricer\ analytique\ et\ par\ Monte\ Carlo,}}
+\DoxyCodeLine{00040\ \textcolor{comment}{//\ ce\ qui\ permet\ de\ comparer\ les\ deux\ directement.}}
+\DoxyCodeLine{00041\ \textcolor{keyword}{struct\ }\doxymbox{\hyperlink{struct_pricing_result}{PricingResult}}\ \{}
+\DoxyCodeLine{00042\ \ \ \ \ \textcolor{keywordtype}{double}\ price\ \ \ =\ 0.0;}
+\DoxyCodeLine{00043\ \ \ \ \ \textcolor{keywordtype}{double}\ delta\ \ \ =\ 0.0;\ \ \ \textcolor{comment}{//\ dV/dS}}
+\DoxyCodeLine{00044\ \ \ \ \ \textcolor{keywordtype}{double}\ gamma\ \ \ =\ 0.0;\ \ \ \textcolor{comment}{//\ d²V/dS²}}
+\DoxyCodeLine{00045\ \ \ \ \ \textcolor{keywordtype}{double}\ vega\ \ \ \ =\ 0.0;\ \ \ \textcolor{comment}{//\ dV/dsigma}}
+\DoxyCodeLine{00046\ \ \ \ \ \textcolor{keywordtype}{double}\ theta\ \ \ =\ 0.0;\ \ \ \textcolor{comment}{//\ dV/dt\ (décroissance\ temporelle,\ par\ jour\ calendaire)}}
+\DoxyCodeLine{00047\ \ \ \ \ \textcolor{keywordtype}{double}\ rho\ \ \ \ \ =\ 0.0;\ \ \ \textcolor{comment}{//\ dV/dr}}
+\DoxyCodeLine{00048\ \ \ \ \ \textcolor{keywordtype}{double}\ stderr\_\ =\ 0.0;\ \ \ \textcolor{comment}{//\ Écart-\/type\ de\ l'estimateur\ (0\ pour\ l'analytique,\ >0\ pour\ Monte\ Carlo)}}
+\DoxyCodeLine{00049\ \};}
+
+\end{DoxyCode}
