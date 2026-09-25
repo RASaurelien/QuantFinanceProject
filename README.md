@@ -44,7 +44,7 @@ I used GitHub Copilot to refine certain parts, though it was mainly used for deb
 | P24 | P&L attribution, options market maker | Python | Delta-hedged option P&L split into Delta/Gamma/Theta/Vega |
 | P25 | Pricing/hedging via path signatures | Python | Rough-vol hedging via linear regression on signatures, hand-coded |
 | P26 | Rough volatility | Python | Rough Heston calibration via fractional Riccati equation |
-| P27 | Deep hedging | ? | No README yet |
+| P27 | Deep hedging | Python | Neural hedging strategy under transaction costs (MLP + Adam from scratch), entropic risk 44% lower than BS delta |
 | P28 | Optimal execution, market impact | Python | Optimal execution under transient impact, QP solved via KKT |
 | P29 | Order book modeling (Hawkes) | Python | Order book via Hawkes processes, hand-coded simulation + MLE |
 | P30 | Live vol surface | Python | Live Yahoo Finance feed → SVI/SSVI surface + Dupire/MC pricing |
