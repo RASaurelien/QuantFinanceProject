@@ -1,1 +1,0 @@
-print("Ce script est juste pour avoir un terminal pour update les fichiers locaux au github")
