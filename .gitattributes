@@ -1,4 +1,6 @@
 *.md linguist-documentation
 *.tex linguist-documentation
 *.html linguist-documentation
+*.css linguist-documentation
 *.js linguist-vendored
+*.sty linguist-documentation
