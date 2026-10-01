@@ -1,0 +1,4 @@
+*.md linguist-documentation
+*.tex linguist-documentation
+*.html linguist-documentation
+*.js linguist-vendored
