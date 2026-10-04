@@ -169,3 +169,8 @@ python experiment.py       # entraînement complet + résultats + graphique
   ICLR 2015, arXiv:1412.6980
 - Bayer, Friz & Gatheral, *Pricing under rough volatility*,
   Quantitative Finance 16(6), 2016 (marché de simulation, repris du projet 1)
+
+## Complexité :
+O(epochs·paths·steps·L·W²)	
+Forward/backward d'un MLP 
+(couches L, largeur W) sur chaque pas de chaque trajectoire

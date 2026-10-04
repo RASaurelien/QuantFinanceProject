@@ -150,3 +150,8 @@ python hedge_experiment.py
   18(6), 2018, arXiv:1410.3394
 - Bennedsen, Lunde & Pakkanen, *Hybrid scheme for Brownian
   semistationary processes*, Finance and Stochastics 21, 2017
+
+## Complexité :
+O(n·d²) (d = profondeur tronquée)	
+Relation de Chen incrémentale : 
+la dimension de la signature croît en dim^d mais d reste petit

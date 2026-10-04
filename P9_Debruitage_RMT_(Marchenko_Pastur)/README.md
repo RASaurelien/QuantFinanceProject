@@ -103,3 +103,7 @@ cd src && python main.py
   Tier 2 #7) biaiseraient légèrement le spectre de bruit théorique.
 - Un seul régime testé (`q=0.4`), l'intérêt du débruitage croît avec
   `q` (se rapprochant de 1) et devient marginal quand `T >> N`.
+
+## Complexité :
+O(N³)	
+Décomposition en valeurs propres de la matrice de covariance N×N

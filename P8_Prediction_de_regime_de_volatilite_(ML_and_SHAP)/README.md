@@ -114,3 +114,9 @@ cd src && python main.py
   (Random Forest) mais ne se généralise pas directement à un modèle de
   deep learning, qui nécessiterait KernelSHAP ou DeepSHAP (plus lents,
   approximatifs).
+
+## C  omplexité :
+O(n log n) à O(T·L·D²)	
+Entraînement arbre ~O(n log n) :
+TreeSHAP exact en O(T·L·D²) 
+(T arbres, L feuilles, D profondeur) au lieu de l'exponentiel naïf

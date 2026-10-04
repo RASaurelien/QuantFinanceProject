@@ -85,3 +85,6 @@ cd src && python main.py
   purement poissonnien, indépendant de l'information) une extension
   reconnue du modèle de base traite ce point (Avellaneda-Stoikov
   suppose un marché "non informé", ce qui n'est pas toujours réaliste).
+
+## Complexité :
+O(M·S)	Simulation MC, calcul de quote O(1) par pas

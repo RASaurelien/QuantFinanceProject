@@ -171,3 +171,8 @@ python experiment.py     # expérience complète + graphiques
 - Alfonsi, Fruth & Schied, *Optimal execution strategies in limit
   order books with general shape functions*, Quantitative Finance
   10(2), 2010
+
+## Complexité :
+O(n³) pire cas	
+Résolution du QP par système linéaire KKT 
+(n = nombre de tranches temporelles, typiquement petit)

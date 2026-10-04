@@ -64,3 +64,8 @@ parallélisation multi-coeur.
 - **Données réelles** : remplacer `simulate_asynchronous_ticks` par un
   chargement depuis vos flux de marché (ITCH, FIX, base tick interne, etc.) ;
   le reste du pipeline (intervalles, HY, matrice) ne change pas.
+
+## Compléxité :
+O(N²·(n+m))	
+Estimateur pairwise entre N actifs ; 
+par paire, la version optimisée (tri + fusion des intervalles) est O(n+m) au lieu de O(n·m) en naïf

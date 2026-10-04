@@ -91,3 +91,6 @@ configurations testées (call/put, avec/sans dividende).
 * Options européennes uniquement, le projet suivant de la roadmap (EDP/différences finies) traite l'exercice anticipé américain.
 * Les Greeks Monte Carlo sont estimés par différences finies : biaisés à l'ordre O(h²) près, ce qui est acceptable ici mais mériterait des pathwise/likelihood-ratio estimators dans une version plus avancée.
 
+## Complexité :
+O(1) (BS fermé) / O(M) (MC)	Black-Scholes = formule fermée, 
+Monte Carlo = M tirages i.i.d. (pas de dépendance de chemin pour un call européen)

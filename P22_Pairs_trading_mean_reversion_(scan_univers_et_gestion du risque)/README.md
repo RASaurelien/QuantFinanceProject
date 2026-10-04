@@ -90,3 +90,7 @@ cd src && python main.py
 - Coûts de transaction non modélisés (contrairement au moteur de
   backtesting événementiel, Tier 2 #11), les ajouter pénaliserait
   davantage la version avec stop-loss (plus de rotations).
+
+## Complexité :
+O(N²·T)	Scan de cointégration sur toutes les paires, 
+d'un univers de N actifs, chacune en O(T)

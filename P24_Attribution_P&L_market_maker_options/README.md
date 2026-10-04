@@ -72,3 +72,7 @@ cd src && python main.py
   discret et hedge continu (théorique) est lui-même une source de
   bruit additionnel dans le P&L réalisé, distincte de l'effet
   vol réalisée vs implicite qui est le sujet de ce projet.
+
+## Complexité :
+O(n)	
+Décomposition Taylor (Delta/Gamma/Theta/Vega) fermée à chaque pas

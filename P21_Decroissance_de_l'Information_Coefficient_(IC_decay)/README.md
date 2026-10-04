@@ -60,3 +60,7 @@ cd src && python main.py
   demi-vie d'un signal peut elle-même varier dans le temps
   (non-stationnarité de l'edge), ce qui nécessiterait une analyse
   glissante plutôt qu'un ajustement unique sur tout l'historique.
+
+## Complexité :
+O(n·H)	
+Corrélation calculée pour chaque horizon H sur n observations

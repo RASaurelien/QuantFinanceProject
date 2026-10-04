@@ -106,3 +106,7 @@ python src/main.py
 - Un seul produit (swap) et une seule contrepartie, pas de nettting
   set multi-produits ni de collatéral (CSA), qui sont les deux
   raffinements suivants naturels d'un moteur CVA de desk.
+
+## Complexité :
+O(M·S)	
+M trajectoires de taux courts simulées sur S pas de temps pour le profil d'exposition

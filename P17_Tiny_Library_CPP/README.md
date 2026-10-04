@@ -87,3 +87,8 @@ g++ -std=c++17 -O3 -march=native -Iinclude -o pricer src/main.cpp
 - Pas de Greeks ni de réduction de variance (antithétique) dans ce
   moteur générique, volontairement minimal pour rester lisible ;
   les projets 1 et 2 du dépôt couvrent déjà ces techniques séparément.
+
+## Complexité :
+O(M·S)
+Les templates compile-time réduisent la constante 
+(pas de vtable) mais ne changent pas la classe de complexité

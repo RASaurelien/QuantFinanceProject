@@ -111,3 +111,8 @@ visualiser la frontière d'exercice anticipé dans le temps.
   une EDP à plusieurs dimensions (coût exponentiel), soit du Monte Carlo
   (voir projet 1) avec régression (Longstaff-Schwartz) pour l'exercice
   anticipé.
+
+## Complexité :
+O(Nx·Nt)	
+Système tridiagonal résolu par l'algorithme de Thomas 
+(O(Nx) par pas de temps) sur Nt pas de temps

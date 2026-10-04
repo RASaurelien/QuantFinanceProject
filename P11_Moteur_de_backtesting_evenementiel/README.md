@@ -107,9 +107,6 @@ pas en option qu'on oublierait d'activer.
   statistique en bonne et due forme comparerait les distributions de
   Sharpe entre les deux stratégies).
 
-## Prochaine étape (Tier 2 #12)
-
-Pricer de produit structuré autocall (Python + VBA), pour prolonger
-le lien avec le livre de Guliano de la liste de référence et
-diversifier vers les produits structurés, avec un volet VBA/Excel très
-demandé en banque de financement.
+## Complexité :
+O(E)	File FIFO vraie 
+(pas de priority queue) → traitement linéaire des E événements

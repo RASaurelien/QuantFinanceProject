@@ -146,3 +146,7 @@ live_vol_surface.py
   calibrées indépendamment — c'est une vérification *a posteriori*, pas une
   contrainte imposée à l'optimiseur (contrairement à la SSVI, où la pénalité
   butterfly est intégrée à la calibration).
+
+## Complexité :
+O(K·n) par rafraîchissement	Même schéma que P3,
+recalibré à chaque tick reçu du flux Yahoo Finance

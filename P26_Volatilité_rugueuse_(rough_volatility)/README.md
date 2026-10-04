@@ -181,3 +181,7 @@ python calibration.py      # calibration complète + graphique
   Quantitative Finance 17(2), 2017
 - Heston, *A Closed-Form Solution for Options with Stochastic Volatility*,
   Review of Financial Studies 6(2), 1993 (décomposition P1/P2)
+
+## Complexité :
+O(N²) naïf / O(N log N) optimisé	
+Équation de Riccati fractionnaire = convolution à mémoire longue ; accélérable par FFT

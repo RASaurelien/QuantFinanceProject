@@ -102,3 +102,8 @@ Génère dans `outputs/` :
 - Le taux sans risque et le dividende sont supposés constants et plats
   par maturité, simplification raisonnable ici, mais une vraie
   desk utiliserait une courbe de taux et un calendrier de dividendes.
+
+## Complexité :
+O(K·n) par maturité	Optimisation non-linéaire à ~5 paramètres, 
+K itérations, évaluation O(n) sur n points de vol par slice, 
+vérif no-arbitrage O(n²) sur la grille

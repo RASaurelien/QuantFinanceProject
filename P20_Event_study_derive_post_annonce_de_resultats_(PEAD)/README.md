@@ -72,3 +72,7 @@ cd src && python main.py
   académique utilise souvent un modèle à plusieurs facteurs
   (Fama-French) pour le calcul des rendements attendus, ce qui
   changerait légèrement les AR mesurés.
+
+## Complexité :
+O(n·E)	
+Fenêtre d'événement O(n) répétée pour E événements

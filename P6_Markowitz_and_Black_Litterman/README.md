@@ -194,3 +194,7 @@ supplémentaire n'est nécessaire. `Rscript` doit être disponible dans le
 - `Omega` diagonale (vues supposées indépendantes), Black-Litterman
   permet en théorie une matrice pleine si les vues sont corrélées.
 
+## C  omplexité :
+O(N³)	
+Inversion/décomposition de la matrice de covariance N×N 
+(frontière efficiente + mise à jour bayésienne)

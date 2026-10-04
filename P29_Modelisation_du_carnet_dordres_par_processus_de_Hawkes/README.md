@@ -172,3 +172,8 @@ python experiment.py   # application bivariée complète + graphiques
 - Filimonov & Sornette, *Quantifying reflexivity in financial markets:
   Toward a prediction of flash crashes*, Physical Review E 85, 2012
   (ratios de branchement proches de 1 sur données réelles)
+
+## Complexité :
+O(n²) naïf / O(n) optimisé	
+Intensité dépend de tout l'historique ; 
+récursion à noyau exponentiel ramène ça à O(n)

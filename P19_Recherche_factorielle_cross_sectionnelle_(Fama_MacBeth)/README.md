@@ -78,3 +78,7 @@ cd src && python main.py
 - Pas de contrôle pour la corrélation entre facteurs (multicolinéarité)
   ni de neutralisation sectorielle, deux raffinements standards d'une
   vraie étude factorielle académique.
+
+## Complexité :
+O(N·T·k²)	T régressions temporelles 
+(1ère étape, O(k²) chacune) + N régressions cross-sectionnelles (2ᵉ étape)

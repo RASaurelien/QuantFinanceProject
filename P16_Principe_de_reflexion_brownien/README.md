@@ -78,3 +78,7 @@ courbes se superposent maintenant correctement.
   simulation à pas de temps fini d'un objet en temps continu.
 - Un seul niveau `a` testé, le code se généralise directement à
   plusieurs niveaux/temps pour une étude de sensibilité plus large.
+
+## Complexité :
+O(M·S)	
+Simulation MC de trajectoires pour valider les lois du max et du temps de premier passage

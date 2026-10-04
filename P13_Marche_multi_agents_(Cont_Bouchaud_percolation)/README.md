@@ -69,3 +69,7 @@ cd src && python main.py    # ~10 secondes (2000 agents x 2000 pas de temps)
 - Impact de prix linéaire (rendement proportionnel à la demande nette),
   une hypothèse simplificatrice standard à ce niveau de modèle, pas
   calibrée sur une vraie fonction d'impact de marché.
+
+## Complexité :
+O(N·T)	N agents sur T pas de temps : 
+clustering de percolation via union-find quasi-O(N)

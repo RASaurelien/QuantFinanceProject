@@ -111,3 +111,10 @@ le dossier depuis lequel le script est lancé.
   vrai modèle de risque de production combinerait souvent cette
   approche avec un GARCH filtré (VaR conditionnelle), plutôt qu'un
   ajustement de distribution non-conditionnel sur la fenêtre brute.
+
+## Complexité :
+
+O(n log n)	
+Tri pour VaR historique : 
+MC en O(M) : test de Kupiec O(1) sur le compte de violations,
+backtest O(T)

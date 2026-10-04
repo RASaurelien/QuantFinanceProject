@@ -77,3 +77,8 @@ cd src && python main.py
   appris.
 - Coûts de transaction simples (bps fixes), cohérents avec les autres
   projets du dépôt mais pas calibrés sur un vrai carnet d'ordres.
+
+## Complexité :
+O(épisodes·steps)	
+Mise à jour de la Q-table en O(1) par pas 
+(petit espace état-action tabulaire)

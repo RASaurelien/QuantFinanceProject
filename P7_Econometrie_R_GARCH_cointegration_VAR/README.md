@@ -117,3 +117,8 @@ uniquement** (pas de `rugarch`, `urca`, `vars`, `ggplot2`).
   systématique sur un univers d'actifs avec correction pour tests
   multiples (le risque de "cointégration fallacieuse" trouvée par
   hasard sur beaucoup de paires testées).
+
+## C  omplexité :
+O(K·T)	MLE du GARCH : 
+K itérations d'optimiseur, chaque évaluation de vraisemblance 
+O(T) ; VAR = régression O(T·k²+k³)

@@ -1,10 +1,9 @@
 # Pricer Autocall (Athena/Phoenix à mémoire), Python + VBA/Excel
 
 Pricing Monte Carlo d'une note structurée autocall à mémoire de coupon
-(le produit structuré le plus vendu en banque de détail/privée en
+(le produit structuré trés vendu en banque de détail/privée en
 Europe), avec le moteur rigoureux en Python et une présentation
-Excel/VBA pour le volet client, exactement la répartition d'un vrai
-desk de structuration.
+Excel/VBA pour le volet client.
 
 ## Le produit (mécanique complète)
 
@@ -32,7 +31,7 @@ fermée.
 | Barrière d'autocall quasi nulle → rappel quasi certain à t=1 | 1048.0812 | `(notional+coupon)·e^(-r·t1)` = 1048.0812 | **0.000%** |
 
 Ces deux cas réduisent le produit complexe à une obligation simple
-dont le prix se calcule à la mai,— la concordance exacte valide toute
+dont le prix se calcule à la mai, la concordance exacte valide toute
 la mécanique (mémoire de coupon, autocall, actualisation) d'un coup.
 
 ## Résultat de la note de référence
@@ -90,11 +89,10 @@ diagramme de payoff (100% formules, se met à jour automatiquement),
 feuille *Pricing Summary* pour les résultats de référence du moteur
 Python.
 
-**VBA (à tester sur ta machine) :**
-Dans l'éditeur VBA d'Excel (Alt+F11) : clic droit sur le projet →
-*Importer un fichier* → `AutocallPricer.bas`, puis créer un bouton
-(onglet Développeur → Insérer → Bouton) sur la feuille *Pricing
-Summary* assigné à la macro `RunPricing`.
+**VBA :**
+Dans l'éditeur VBA d'Excel (Alt+F11) : clic droit sur le projet → Importer un fichier → AutocallPricer.bas, 
+puis cliquer sur le bouton dans la feuille *Pricing Summary* assigné à la macro RunPricing (bouton s'appellant `RunPricing`)
+Modification des valeurs sur la feuille *Inputs*
 
 ## Limites connues
 
@@ -109,5 +107,8 @@ Summary* assigné à la macro `RunPricing`.
   Python à nombre de trajectoires égal, compromis assumé pour rester
   lisible en macro Excel.
 - Delta uniquement, pas de vega, de gamma, ni d'analyse de wrong-way
-  risk sur la corrélation défaut/sous-jacent (voir Tier 1 #5 pour ce
-  type d'analyse côté CVA).
+  risk sur la corrélation défaut/sous-jacent.
+
+## Compléxité
+O(M·S)	
+MC path-dependent (barrières observées à chaque date de constatation)

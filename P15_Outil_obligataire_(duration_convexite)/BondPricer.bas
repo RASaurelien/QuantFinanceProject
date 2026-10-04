@@ -13,6 +13,8 @@ Option Explicit
 '   =MacaulayDuration(100, 0.05, 0.04, 2, 10)   -> duration (annees)
 '   =ModifiedDuration(100, 0.05, 0.04, 2, 10)    -> duration modifiee
 '   =BondConvexity(100, 0.05, 0.04, 2, 10)        -> convexite
+' Macro RunBondPricing : lancee par le bouton "Lancer le pricing" du classeur
+' bond_pricer.xlsm (feuille Results). Lit la feuille Inputs, ecrit Results.
 ' ============================================================
 
 ' Prix d'une obligation a coupons fixes.
@@ -143,3 +145,58 @@ Function InterpolateYield(maturities As Range, yields As Range, targetMaturity A
         End If
     Next i
 End Function
+
+' ============================================================
+' Macro principale, assignee au bouton "Lancer le pricing"
+' Lit les parametres de la feuille Inputs et ecrit tout dans Results
+' ============================================================
+Sub RunBondPricing()
+    Dim wi As Worksheet, wr As Worksheet
+    Dim face As Double, cpn As Double, y As Double, mat As Double, shock As Double
+    Dim freq As Integer, i As Long, s As Double
+    Dim price As Double, shockedPrice As Double
+
+    Set wi = ThisWorkbook.Worksheets("Inputs")
+    Set wr = ThisWorkbook.Worksheets("Results")
+
+    face = wi.Range("C5").Value
+    cpn = wi.Range("C6").Value
+    y = wi.Range("C7").Value
+    freq = CInt(wi.Range("C8").Value)
+    mat = wi.Range("C9").Value
+    shock = wi.Range("C10").Value
+
+    If freq <= 0 Or mat <= 0 Or face <= 0 Then
+        MsgBox "Parametres invalides : nominal, frequence et maturite doivent etre > 0.", vbExclamation
+        Exit Sub
+    End If
+
+    Application.ScreenUpdating = False
+
+    price = BondPrice(face, cpn, y, freq, mat)
+    shockedPrice = BondPrice(face, cpn, y + shock, freq, mat)
+
+    wr.Range("C5").Value = price
+    wr.Range("C6").Value = MacaulayDuration(face, cpn, y, freq, mat)
+    wr.Range("C7").Value = ModifiedDuration(face, cpn, y, freq, mat)
+    wr.Range("C8").Value = BondConvexity(face, cpn, y, freq, mat)
+    wr.Range("C9").Value = PriceChangeApprox(face, cpn, y, freq, mat, shock)
+    wr.Range("C10").Value = shockedPrice - price
+    wr.Range("C11").Value = wr.Range("C9").Value - wr.Range("C10").Value
+    wr.Range("C12").Value = InterpolateYield(wi.Range("B14:B18"), wi.Range("C14:C18"), wi.Range("C20").Value)
+
+    ' Table de sensibilite : chocs de -200 a +200 bps par pas de 50 bps
+    For i = 0 To 8
+        s = (i - 4) * 0.005
+        wr.Cells(17 + i, 2).Value = s
+        wr.Cells(17 + i, 3).Value = BondPrice(face, cpn, y + s, freq, mat)
+        wr.Cells(17 + i, 4).Value = wr.Cells(17 + i, 3).Value - price
+        wr.Cells(17 + i, 5).Value = PriceChangeApprox(face, cpn, y, freq, mat, s)
+        wr.Cells(17 + i, 6).Value = wr.Cells(17 + i, 5).Value - wr.Cells(17 + i, 4).Value
+    Next i
+
+    Application.ScreenUpdating = True
+    wr.Activate
+    MsgBox "Pricing termine. Prix = " & Format(price, "0.0000"), vbInformation
+End Sub
+

@@ -67,3 +67,7 @@ cd python && python plot_results.py      # génère le graphique
   directement l'itérateur de génération), une extension naturelle
   serait un vrai parseur zero-copy depuis un fichier CSV/binaire sur
   disque, avec `mmap` pour éviter la copie mémoire.
+
+## Complexité :
+O(T)	Features streaming O(1) par tick, 
+validé linéaire jusqu'à 5M ticks

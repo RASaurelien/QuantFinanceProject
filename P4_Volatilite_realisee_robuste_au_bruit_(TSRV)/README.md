@@ -103,3 +103,7 @@ cd python && python plot_results.py       # génère les deux PNG dans outputs/
 - `K* ~ n^(2/3)` avec constante 1 est un choix simple ; la constante
   optimale dépend en théorie du ratio signal/bruit réel, qu'on pourrait
   estimer empiriquement (voir ZMAS 2005, section sur le choix de K).
+
+## Complexité :
+O(n)	Sous-échantillonnage à deux échelles, 
+un seul passage linéaire sur les n ticks
