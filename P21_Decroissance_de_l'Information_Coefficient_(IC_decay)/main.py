@@ -9,7 +9,7 @@ IC(h) = correlation de rang (Spearman) entre le signal au temps t,
 et le rendement futur sur l'horizon h : 
 IC(h) = corr_rang(S_t, R_{t,t+h})
 
-Prolongement du signal de regime de volatilite (Tier 2 #8) : 
+Prolongement du projet sur le signal de regime de volatilite (P8): 
 la meme question, "le signal detecte-t-il l'appartenance a un regime, 
 ou anticipe-t-il les BASCULES ?" 
 - se reformule ici comme une courbe de decroissance de l'IC en fonction de l'horizon.

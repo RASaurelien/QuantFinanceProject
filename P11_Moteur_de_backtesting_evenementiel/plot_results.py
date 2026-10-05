@@ -6,7 +6,7 @@ et trace les courbes d'équité des deux stratégies,
 vs le benchmark Buy & Hold, 
 ainsi que le prix sous-jacent pour visualiser les régimes de marché traversés.
 
-Usage : après ./target/release/tier2_backtester, dans le même dossier
+Usage : après ./target/release/P11, dans le même dossier
     python plot_results.py
 """
 

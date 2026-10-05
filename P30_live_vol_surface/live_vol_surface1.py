@@ -1,5 +1,5 @@
 """
-live_vol_surface.py  —  Surface de volatilité live : SVI (par échéance) + SSVI (globale)
+live_vol_surface.py,  Surface de volatilité live : SVI (par échéance) + SSVI (globale)
 =========================================================================================
 Script unique, données options Yahoo Finance (yfinance), recalcul de l'IV à partir des prix (mid bid/ask), 
 calibration SVI par échéance,
@@ -473,7 +473,7 @@ def main():
     plt.ion()
     plt.show(block=False)
     last = 0.0
-    print(f"[live] {a.symbol} — Ctrl+C ou fermer la fenêtre pour arrêter.")
+    print(f"[live] {a.symbol} - Ctrl+C ou fermer la fenêtre pour arrêter.")
     try:
         while plt.fignum_exists(fig.number):
             if not st["lock"] and time.time() - last >= a.interval:

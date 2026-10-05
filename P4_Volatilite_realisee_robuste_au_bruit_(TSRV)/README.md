@@ -84,7 +84,7 @@ outputs/               # Graphiques générés (commités : preuve visuelle pour
 
 ```bash
 cargo build --release
-./target/release/tier1_realized_vol      # génère signature_plot.csv et bias_rmse.csv
+./target/release/realized_vol      # génère signature_plot.csv et bias_rmse.csv
 
 cd python && python plot_results.py       # génère les deux PNG dans outputs/
 ```

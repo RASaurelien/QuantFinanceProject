@@ -4,10 +4,7 @@ Moteur de pricing Monte Carlo générique (`MonteCarloEngine<Model,
 Payoff>`) où le modèle et le payoff sont résolus **à la compilation**
 plutôt qu'à l'exécution, avec validation contre Black-Scholes
 analytique et benchmark contre l'équivalent à dispatch dynamique
-(`virtual`). Projet optionnel/avancé du Tier 3, démontre une
-compétence C++ plus poussée que les projets précédents (pricing
-engine, EDP), qui utilisaient déjà des classes concrètes mais pas de
-généricité par templates.
+(`virtual`). Projet optionnel/avancé du P3
 
 ## Le principe : zero-cost abstraction
 
@@ -53,9 +50,8 @@ la boucle est la génération du nombre aléatoire gaussien
 L'indirection `virtual` ne représente donc qu'une petite fraction du
 temps total. Le bénéfice des templates serait beaucoup plus visible
 sur un payoff plus coûteux à évaluer (produit structuré avec plusieurs
-conditions, comme le pricer autocall du Tier 2) ou sur un modèle moins
-coûteux que la génération gaussienne elle-même, ce que ce benchmark
-ne teste pas, et le README le dit plutôt que d'arrondir le résultat
+condition) ou sur un modèle moins coûteux que la génération gaussienne elle-même, 
+ce que ce benchmark ne teste pas, et le README le dit plutôt que d'arrondir le résultat
 dans le sens de la conclusion attendue.
 
 ## Structure

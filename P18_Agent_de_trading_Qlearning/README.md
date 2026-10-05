@@ -70,7 +70,7 @@ cd src && python main.py
 - Une seule paire train/test, un vrai test de robustesse répéterait
   l'entraînement sur plusieurs seeds et regarderait la distribution des
   performances, comme le fait le projet de backtesting événementiel
-  (Tier 2 #11).
+  (P11).
 - Récompense = rendement immédiat, pas de shaping ni d'objectif
   ajusté du risque (Sharpe différentiel, drawdown pénalisé), un choix
   de récompense différent changerait probablement le comportement

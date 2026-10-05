@@ -1,10 +1,10 @@
 [package]
-name = "tier2_tick_pipeline"
+name = "tick_pipeline"
 version = "0.1.0"
 edition = "2021"
 
 [[bin]]
-name = "tier2_tick_pipeline"
+name = "tick_pipeline"
 path = "main.rs"
 
 [dependencies]

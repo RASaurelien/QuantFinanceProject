@@ -1,7 +1,7 @@
 # Pairs Trading Mean-Reversion, Scan d'Univers et Gestion du Risque (Python)
 
 Contrairement au mean-reversion générique du backtester événementiel
-(Tier 2 #11, une seule paire donnée à l'avance), ce projet est pensé
+(P11, une seule paire donnée à l'avance), ce projet est pensé
 **comme un trader le construirait** : scan de cointégration sur tout
 un univers d'actifs, sélection des meilleures paires, puis backtest
 avec une vraie gestion du risque par position (stop-loss, sizing par
@@ -88,7 +88,7 @@ cd src && python main.py
   tests multiples (Bonferroni ou Benjamini-Hochberg), volontairement
   omise ici pour rester lisible.
 - Coûts de transaction non modélisés (contrairement au moteur de
-  backtesting événementiel, Tier 2 #11), les ajouter pénaliserait
+  backtesting événementiel, P11), les ajouter pénaliserait
   davantage la version avec stop-loss (plus de rotations).
 
 ## Complexité :

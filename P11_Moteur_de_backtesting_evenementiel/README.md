@@ -70,7 +70,7 @@ python/plot_results.py           # Courbes d'équité et drawdowns (à partir du
 
 ```bash
 cargo build --release
-./target/release/tier2_backtester      # affiche le rapport, exporte equity_curves.csv
+./target/release/P11      # affiche le rapport, exporte equity_curves.csv
 
 python plot_results.py                  # transforme le CSV en equity_curves.png et drawdowns.png
 ```

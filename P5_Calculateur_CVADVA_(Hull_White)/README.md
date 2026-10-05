@@ -16,11 +16,6 @@ calcul de bout en bout, pas une formule toute faite, mais la chaîne
 complète : modèle de taux → simulation d'exposition → intégration sur
 une courbe de survie.
 
-Peu d'étudiants en L3 ont un projet xVA fonctionnel avec un vrai moteur
-de simulation de taux (plutôt qu'une exposition supposée constante),
-c'est un signal fort pour du sell-side, du risque de contrepartie, ou
-de la structuration.
-
 ## Pipeline
 
 ```

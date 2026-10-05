@@ -4,10 +4,9 @@ Modèle de Cont & Bouchaud (2000) : les faits stylisés des marchés
 financiers (queues épaisses, clustering de volatilité) émergent d'un
 **mécanisme purement structurel** la formation de clusters d'agents
 sur un graphe aléatoire, près du seuil de percolation, sans aucune
-hypothèse d'efficience ou de rationalité individuelle. Deuxième projet
-du dépôt exploitant le point fort "physique statistique" du profil
-(après le débruitage RMT, Tier 2 #9), sur un terrain différent : la
-physique des transitions de phase plutôt que la théorie des matrices
+hypothèse d'efficience ou de rationalité individuelle. Un autre projet
+du dépôt exploitant l'aspect "physique statistique" (P9), sur un terrain différent : 
+la physique des transitions de phase plutôt que la théorie des matrices
 aléatoires.
 
 ## Mécanique du modèle

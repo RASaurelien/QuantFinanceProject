@@ -5,7 +5,7 @@ est décomposé en contributions Delta, Gamma, Theta, Vega, la question
 que tout trader d'options doit savoir répondre : *"pourquoi j'ai
 gagné/perdu de l'argent cette semaine, malgré un delta-hedge parfait ?"*
 Dernier projet du volet "quant trader", réutilisant les formules
-Black-Scholes du pricing engine (Tier 1 #1).
+Black-Scholes du pricing engine (P1).
 
 ## Le point central : vol réalisée vs vol implicite
 

@@ -98,7 +98,7 @@ main.
   (`markowitz.py`) que côté R (`black_litterman.R`) : sans contrainte
   long-only, le problème moyenne-variance a une solution analytique
   exacte (théorème des deux fonds). Même logique que le choix
-  Brennan-Schwartz du projet EDP (Tier 1 #2), préférer une formule
+  Brennan-Schwartz du projet EDP (P2), préférer une formule
   fermée à un solveur itératif quand la structure du problème le permet.
 - **R en base R uniquement** (pas de `quadprog`, pas de `ggplot2`) :
   l'algèbre matricielle bayésienne et le graphique en barres sont

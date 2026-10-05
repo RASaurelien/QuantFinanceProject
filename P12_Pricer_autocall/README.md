@@ -100,7 +100,7 @@ Modification des valeurs sur la feuille *Inputs*
   plusieurs sous-jacents, la structure la plus commercialisée en
   pratique) demanderaient une simulation multivariée corrélée.
 - Volatilité et taux constants, un vrai desk utiliserait une surface
-  de volatilité complète (voir Tier 1 #3) et une courbe de taux, pas
+  de volatilité complète (P3) et une courbe de taux, pas
   des valeurs plates.
 - Le VBA utilise Box-Muller "brut" (pas de variates antithétiques ni
   de Common Random Numbers), plus lent à converger que la version

@@ -49,7 +49,7 @@ outputs/                 # Graphique (committé : preuve visuelle pour le README
 
 ```bash
 cargo build --release
-./target/release/tier2_tick_pipeline    # traite 5M ticks, exporte un échantillon CSV
+./target/release/tick_pipeline    # traite 5M ticks, exporte un échantillon CSV
 
 cd python && python plot_results.py      # génère le graphique
 ```

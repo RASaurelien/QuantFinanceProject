@@ -83,7 +83,7 @@ Les rafales sont visibles à l'œil : les deux intensités montent
 ensemble (excitation croisée), puis retombent en `exp(−βΔt)` entre les
 événements.
 
-## 4. Résultat principal — le clustering mesuré par le facteur de Fano
+## 4. Résultat principal, le clustering mesuré par le facteur de Fano
 
 Le **facteur de Fano** (indice de dispersion `Var(N(Δ))/E[N(Δ)]`)
 compare le processus de Hawkes à un processus de Poisson homogène de

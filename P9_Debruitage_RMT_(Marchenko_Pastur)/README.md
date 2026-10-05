@@ -22,7 +22,7 @@ structure de corrélation, contrairement à un simple seuillage
 (thresholding) arbitraire.
 
 C'est un problème très concret en gestion de portefeuille : la matrice
-de covariance utilisée dans Markowitz (voir Tier 1 #6) est **exactement**
+de covariance utilisée dans Markowitz (P6) est **exactement**
 le genre d'objet mal estimé que ce projet corrige.
 
 ## Résultat principal validation par portefeuille
@@ -67,7 +67,7 @@ qu'on le lui indique, uniquement à partir du spectre observé.
 3. **Reconstruction** : `C_débruitée = V Λ_débruitée V'`, renormalisée
    pour une diagonale exactement égale à 1.
 4. **Validation** : portefeuille de variance minimale (formule fermée,
-   même théorème des deux fonds que Tier 1 #6) sur covariance brute,
+   même théorème des deux fonds que P6) sur covariance brute,
    débruitée, et oracle, comparaison de la variance **réelle**.
 
 ## Structure
@@ -99,8 +99,7 @@ cd src && python main.py
   règle de coupure binaire.
 - Rendements simulés iid (indépendants dans le temps), la loi de
   Marchenko-Pastur suppose cette hypothèse ; des rendements
-  autocorrélés ou à hétéroscédasticité conditionnelle (GARCH, voir
-  Tier 2 #7) biaiseraient légèrement le spectre de bruit théorique.
+  autocorrélés ou à hétéroscédasticité conditionnelle (GARCH, voir P7) biaiseraient légèrement le spectre de bruit théorique.
 - Un seul régime testé (`q=0.4`), l'intérêt du débruitage croît avec
   `q` (se rapprochant de 1) et devient marginal quand `T >> N`.
 

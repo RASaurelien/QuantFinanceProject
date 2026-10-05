@@ -4,7 +4,7 @@ Combien de temps un signal prédictif garde-t-il son pouvoir de
 prévision ? Question centrale de tout desk de recherche avant de
 déployer un signal troisième et dernier projet "researcher" du
 dépôt, prolongeant la question posée dans le projet régime de
-volatilité (Tier 2 #8) : *"le signal détecte-t-il un état, ou
+volatilité : *"le signal détecte-t-il un état, ou
 anticipe-t-il un changement ?"*, reformulée ici comme une courbe de
 décroissance mesurable.
 
