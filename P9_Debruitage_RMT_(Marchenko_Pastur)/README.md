@@ -4,8 +4,7 @@ Application de la loi de **Marchenko-Pastur** (théorie des matrices
 aléatoires) pour séparer signal et bruit dans une matrice de
 corrélation d'actifs estimée sur un échantillon fini, puis validation
 de l'intérêt pratique du débruitage sur un portefeuille de variance
-minimale. C'est le projet qui exploite directement le point fort
-"physique statistique" du profil, la loi de Marchenko-Pastur vient
+minimale. La loi de Marchenko-Pastur vient
 originellement de la physique des systèmes désordonnés, pas de la
 finance.
 
