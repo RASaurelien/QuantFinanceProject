@@ -1,13 +1,11 @@
 # Économétrie R GARCH, Cointégration, VAR
 
-Trois techniques économétriques classiques, chacune **implémentée à la
-main** (MLE par `optim()`, test ADF, VAR par OLS matriciel) plutôt
-qu'appelée depuis un package spécialisé (`rugarch`, `urca`, `vars`),
-choix imposé par l'absence d'accès à CRAN dans l'environnement de
-développement, mais qui a une vraie valeur pédagogique : comprendre
-exactement ce que fait chaque test plutôt que lire une p-value produite
-par une boîte noire. Prolongement direct du cours d'économétrie déjà
-suivi (Bourbonnais).
+Trois techniques économétriques classiques, (MLE par `optim()`, test ADF, VAR par OLS matriciel) 
+plutôt qu'appelée depuis un package spécialisé (`rugarch`, `urca`, `vars`),
+a une valeur pédagogique : 
+comprendre exactement ce que fait chaque test plutôt que 
+lire une p-value produite par une boîte noire. 
+(Projet inspiré par le livre d'économétrie de Bourbonnais).
 
 ## Les trois modules
 
@@ -33,10 +31,10 @@ Méthode d'Engle-Granger en deux étapes (régression de long terme +
 test ADF sur le résidu), appliquée à **deux paires simulées** :
 
 - une paire cointégrée (tendance stochastique commune) → t-stat ADF
-  **-16.6** (largement sous le seuil -2.86) → cointégration détectée ✓
+  **-16.6** (largement sous le seuil -2.86) → cointégration détectée
 - une paire **non** cointégrée, contrôle négatif (deux marches
   aléatoires indépendantes) → t-stat ADF **-2.22** (au-dessus du
-  seuil) → pas de cointégration détectée, comme attendu ✓
+  seuil) → pas de cointégration détectée, comme attendu
 
 Le contrôle négatif est la partie qui compte : sans lui, un test qui
 "détecte toujours de la cointégration" pourrait sembler fonctionner

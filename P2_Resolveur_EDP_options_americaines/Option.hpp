@@ -1,5 +1,6 @@
 #pragma once
 #include <stdexcept>
+using namespace std;
 
 // ============================================================
 //  Option.hpp
@@ -27,11 +28,11 @@ struct Option {
         // Garde-fous : on refuse de pricer un contrat mal spécifié
         // plutôt que de laisser un NaN se propager silencieusement.
         if (S0 <= 0.0 || K <= 0.0)
-            throw std::invalid_argument("S0 et K doivent être strictement positifs.");
+            throw invalid_argument("S0 et K doivent être strictement positifs.");
         if (T <= 0.0)
-            throw std::invalid_argument("La maturité T doit être strictement positive.");
+            throw invalid_argument("La maturité T doit être strictement positive.");
         if (sigma <= 0.0)
-            throw std::invalid_argument("La volatilité sigma doit être strictement positive.");
+            throw invalid_argument("La volatilité sigma doit être strictement positive.");
     }
 };
 

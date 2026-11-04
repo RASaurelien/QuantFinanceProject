@@ -1,13 +1,10 @@
-# Surface de volatilité live, SVI + SSVI (Python)
+# Surface de volatilité (live), SVI + SSVI
 
 Un seul script, `live_vol_surface.py` : récupère une chaîne d'options réelle
 (Yahoo Finance), recalcule la volatilité implicite à partir des prix, calibre
 un smile SVI par échéance et une surface SSVI globale, vérifie l'absence
 d'arbitrage, puis affiche soit une fenêtre 3D rafraîchie en continu, soit un
 rapport statique (graphiques + CSV + pricing Dupire/Monte Carlo).
-
-Aucune dépendance à Interactive Brokers : conçu pour tourner tel quel sur
-n'importe quel poste avec un accès réseau standard, sans configuration.
 
 ## Pourquoi ce projet
 
@@ -80,7 +77,7 @@ s'installent automatiquement au premier lancement.
 | Option | Défaut | Effet |
 |---|---|---|
 | `--symbol` | `SPY` | Ticker Yahoo Finance |
-| `--interval` | `30` | Secondes entre deux rafraîchissements (mode live) |
+| `--interval` | `30` | Secondes entre deux interrogations de Yahoo (mode live) |
 | `--rate` | `0.04` | Taux sans risque annuel (forward, pricing) |
 | `--div` | `0.0` | Rendement du dividende annuel |
 | `--demo` | | Données synthétiques, hors-ligne |
@@ -92,13 +89,24 @@ s'installent automatiquement au premier lancement.
 ## Mode live (fenêtre interactive)
 
 Surface SSVI 3D (points marché + courbes SVI par échéance superposées) à
-gauche, smile détaillé de l'échéance sélectionnée à droite. Rafraîchie toutes
-les `--interval` secondes.
-- **LOCK UPDATES** : fige le rafraîchissement pour manipuler la vue 3D.
-- **NEXT EXPIRY** : fait défiler l'échéance affichée dans le panneau de droite.
+gauche, smile détaillé de l'échéance sélectionnée à droite.
+
+- **Surface orientable** : clic gauche + déplacement pour la faire tourner,
+  clic droit + déplacement pour zoomer. L'angle de vue est conservé quand la
+  surface est mise à jour.
+- **Mise à jour automatique** : un thread de fond interroge Yahoo toutes les
+  `--interval` secondes. Si les cotations ont changé (spot ou IV), SVI et SSVI
+  sont recalibrées et la surface se redessine seule. Sinon rien ne bouge. La
+  fenêtre reste fluide pendant les requêtes et les calibrations.
+- **PREV EXPIRY / NEXT EXPIRY** : parcourent les échéances dans les deux sens.
+  L'échéance choisie est affichée dans le smile (avec sa position, ex. 3/8) et
+  surlignée en blanc sur la surface 3D. Elle reste sélectionnée après une mise
+  à jour des données.
+- **LOCK UPDATES** : suspend l'affichage des mises à jour. Les données
+  continuent d'être récupérées, la dernière version s'affiche au déverrouillage.
 - Le titre du graphique 3D indique en direct si la SSVI calibrée respecte la
   condition suffisante de non-arbitrage butterfly (Gatheral & Jacquier 2014,
-  Thm 4.2).
+  Thm 4.2), et l'heure de la dernière mise à jour.
 
 ## Mode rapport (`--report`)
 
@@ -127,15 +135,18 @@ live_vol_surface.py
   2. SVI (par échéance)                - Gatheral 2004
   3. SSVI (globale)                    - Gatheral & Jacquier 2014
   4. fetch_yahoo() / fetch_demo()      - sources de données
-  5. redraw() / main()                 - fenêtre live matplotlib
+  5. draw_surface() / draw_smile() / poll_loop() / main()
+                                       - fenêtre live matplotlib + thread de fond
   6. dupire_local_vol() / simulate_paths() / mc_call()
   7. report()                          - rapport statique (PNG/CSV/MC)
 ```
 
 ## Limites connues
 
-- Yahoo est différé (~15 min) : le mode « live » est un rafraîchissement
-  périodique, pas un flux temps réel.
+- Yahoo est différé (~15 min) et n'offre pas de flux : le mode « live »
+  interroge périodiquement et ne redessine que si les cotations ont changé
+  (variation d'IV inférieure à 0,01 point ignorée). Marché fermé, la surface
+  reste donc figée.
 - Le taux sans risque et le dividende sont constants et plats
   (`--rate`, `--div`), pas de courbe de taux ni de calendrier de dividendes.
 - La condition de non-arbitrage butterfly vérifiée pour la SSVI est

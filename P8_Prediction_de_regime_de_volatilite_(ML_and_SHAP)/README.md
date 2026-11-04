@@ -12,9 +12,7 @@ réseau de neurones, voire plus, avec beaucoup moins de risque de
 sur-apprentissage et surtout reste **interprétable**. C'est un choix
 délibéré : éviter le piège classique du "trading bot deep learning"
 générique et illisible, au profit d'un modèle dont on peut *expliquer*
-chaque prédiction (SHAP), ce qui est aussi ce qu'attend un desk de
-risque en pratique (un modèle qu'on ne peut pas expliquer ne passe pas
-la validation interne).
+chaque prédiction (SHAP), (peut etre attendue en deck pour le risk) (un modèle qu'on ne peut pas expliquer ne passe pas la validation interne).
 
 ## Ce que le projet montre vraiment (et ce n'est pas ce qu'on attend au premier abord)
 
@@ -115,7 +113,7 @@ cd src && python main.py
   deep learning, qui nécessiterait KernelSHAP ou DeepSHAP (plus lents,
   approximatifs).
 
-## C  omplexité :
+## Complexité :
 O(n log n) à O(T·L·D²)	
 Entraînement arbre ~O(n log n) :
 TreeSHAP exact en O(T·L·D²) 

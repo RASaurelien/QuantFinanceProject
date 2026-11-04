@@ -1,8 +1,7 @@
 # Hedging sous volatilité rugueuse par régression linéaire sur signatures de chemin
 
 **Langage : Python** (numpy/scipy/matplotlib uniquement, aucune librairie de
-signature externe type `iisignature`/`esig` : j'ai réimplémenté le calcul à
-la main pour que l'algèbre reste transparente).
+signature externe type `iisignature`/`esig`).
 
 ## 1. Question de recherche
 

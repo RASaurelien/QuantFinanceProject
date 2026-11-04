@@ -1,9 +1,8 @@
 # Deep Hedging sous coûts de transaction (réseaux de neurones from-scratch)
 
 **Langage : Python** (numpy uniquement).
-Le réseau de neurones et la rétropropagation sont codés à la main,
-sans framework d'autodiff,
-pour les mêmes raisons de transparence que dans les 2 premiers projets.
+Le réseau de neurones et la rétropropagation sont codés sans framework d'autodiff,
+pour les mêmes raisons de transparence que dans les projets 25, 26.
 
 ## 1. Objectif
 
@@ -28,7 +27,6 @@ Un petit MLP :
 - une sortie `sigmoid` bornée dans [0,1]
   (le ratio de couverture d'un call vit naturellement dans cet intervalle).
 
-Le forward et le backward sont écrits à la main.
 L'optimiseur **Adam** est lui aussi codé de zéro
 (formules standard de Kingma & Ba 2014).
 
@@ -119,7 +117,7 @@ et un delta fermé ne peut pas l'internaliser.
 
 **Test de cohérence sans coûts** (`cost_rate=0`) :
 le delta BS reste meilleur en écart-type pur (1.02 contre 1.46),
-ce qui est cohérent avec le résultat du projet 1.
+ce qui est cohérent avec le résultat du projet 25.
 Le deep hedge garde pourtant un risque entropique plus bas (5.59 contre 10.56).
 C'est attendu : il est entraîné directement sur cette métrique,
 alors que le delta BS ne l'est pas.

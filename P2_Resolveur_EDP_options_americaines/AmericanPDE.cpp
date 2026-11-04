@@ -1,6 +1,7 @@
 #include "AmericanPDE.hpp"
 #include <cmath>
 #include <algorithm>
+using namespace std;
 
 namespace AmericanPDE {
 
@@ -14,16 +15,16 @@ namespace AmericanPDE {
 // C'est ce qui transforme un simple solveur linéaire en solveur
 // de problème de complémentarité linéaire, sans boucle itérative.
 // ------------------------------------------------------------
-static void thomasSolve(const std::vector<double>& a,
-                         const std::vector<double>& b,
-                         const std::vector<double>& c,
-                         std::vector<double> d,               // RHS, copié (modifié en place)
-                         const std::vector<double>& payoff,    // contrainte d'exercice (ignorée si European)
+static void thomasSolve(const vector<double>& a,
+                         const vector<double>& b,
+                         const vector<double>& c,
+                         vector<double> d,               // RHS, copié (modifié en place)
+                         const vector<double>& payoff,    // contrainte d'exercice (ignorée si European)
                          ExerciseStyle style,
-                         std::vector<double>& y)
+                         vector<double>& y)
 {
     const int n = static_cast<int>(b.size());
-    std::vector<double> cPrime(n);
+    vector<double> cPrime(n);
 
     // --- Élimination avant ---
     cPrime[0] = c[0] / b[0];
@@ -37,12 +38,12 @@ static void thomasSolve(const std::vector<double>& a,
     // --- Substitution arrière (+ projection Brennan-Schwartz) ---
     y[n - 1] = d[n - 1];
     if (style == ExerciseStyle::American)
-        y[n - 1] = std::max(y[n - 1], payoff[n - 1]);
+        y[n - 1] = max(y[n - 1], payoff[n - 1]);
 
     for (int i = n - 2; i >= 0; --i) {
         y[i] = d[i] - cPrime[i] * y[i + 1];
         if (style == ExerciseStyle::American)
-            y[i] = std::max(y[i], payoff[i]);   // <-- coeur de Brennan-Schwartz
+            y[i] = max(y[i], payoff[i]);   // <-- coeur de Brennan-Schwartz
     }
 }
 
@@ -59,28 +60,28 @@ GridResult solve(const Option& opt, ExerciseStyle style, int N, int M, double Sm
     result.S.resize(N + 1);
     for (int i = 0; i <= N; ++i) result.S[i] = i * dS;
 
-    std::vector<double> payoff(N + 1);
+    vector<double> payoff(N + 1);
     const bool isCall = (opt.type == OptionType::Call);
     for (int i = 0; i <= N; ++i) {
-        payoff[i] = isCall ? std::max(result.S[i] - opt.K, 0.0)
-                            : std::max(opt.K - result.S[i], 0.0);
+        payoff[i] = isCall ? max(result.S[i] - opt.K, 0.0)
+                            : max(opt.K - result.S[i], 0.0);
     }
 
     // On stocke toute la surface V[n][i] : mémoire négligeable pour
     // des grilles de quelques centaines de points, et ça permet
     // d'extraire la frontière d'exercice + le thêta par différence
     // de tranches temporelles sans repasser par une résolution.
-    result.V.assign(M + 1, std::vector<double>(N + 1, 0.0));
+    result.V.assign(M + 1, vector<double>(N + 1, 0.0));
     result.V[M] = payoff;   // condition terminale : V(S,T) = payoff(S)
 
-    result.exerciseBoundary.assign(M + 1, std::numeric_limits<double>::quiet_NaN());
+    result.exerciseBoundary.assign(M + 1, numeric_limits<double>::quiet_NaN());
 
     // --- Coefficients du schéma de Crank-Nicolson (noeuds intérieurs i=1..N-1) ---
     // Discrétisation standard de l'EDP de Black-Scholes-Merton :
     //   dV/dt + 0.5*sigma^2*S^2*d2V/dS2 + (r-q)*S*dV/dS - r*V = 0
     const int n = N - 1;   // nombre d'inconnues intérieures
-    std::vector<double> aL(n), bL(n), cL(n);   // matrice implicite (inconnue au temps n)
-    std::vector<double> aE(n), bE(n), cE(n);   // matrice explicite (connue au temps n+1)
+    vector<double> aL(n), bL(n), cL(n);   // matrice implicite (inconnue au temps n)
+    vector<double> aE(n), bE(n), cE(n);   // matrice explicite (connue au temps n+1)
 
     for (int k = 0; k < n; ++k) {
         const int i = k + 1;   // indice global du noeud (1..N-1)
@@ -112,16 +113,16 @@ GridResult solve(const Option& opt, ExerciseStyle style, int N, int M, double Sm
             V0 = 0.0;
             VN = (style == ExerciseStyle::American)
                      ? (Smax - opt.K)
-                     : (Smax * std::exp(-opt.q * tauNew) - opt.K * std::exp(-opt.r * tauNew));
+                     : (Smax * exp(-opt.q * tauNew) - opt.K * exp(-opt.r * tauNew));
         } else {
-            V0 = (style == ExerciseStyle::American) ? opt.K : opt.K * std::exp(-opt.r * tauNew);
+            V0 = (style == ExerciseStyle::American) ? opt.K : opt.K * exp(-opt.r * tauNew);
             VN = 0.0;
         }
 
-        const std::vector<double>& Vnext = result.V[nStep + 1];
+        const vector<double>& Vnext = result.V[nStep + 1];
 
         // Construction du second membre : (I + A/2) V^{n+1}
-        std::vector<double> rhs(n);
+        vector<double> rhs(n);
         for (int k = 0; k < n; ++k) {
             const int i = k + 1;
             rhs[k] = aE[k] * Vnext[i - 1] + bE[k] * Vnext[i] + cE[k] * Vnext[i + 1];
@@ -130,11 +131,11 @@ GridResult solve(const Option& opt, ExerciseStyle style, int N, int M, double Sm
         rhs[0]     -= aL[0]     * V0;
         rhs[n - 1] -= cL[n - 1] * VN;
 
-        std::vector<double> payoffInterior(payoff.begin() + 1, payoff.end() - 1);
-        std::vector<double> yInterior(n);
+        vector<double> payoffInterior(payoff.begin() + 1, payoff.end() - 1);
+        vector<double> yInterior(n);
         thomasSolve(aL, bL, cL, rhs, payoffInterior, style, yInterior);
 
-        std::vector<double>& Vcur = result.V[nStep];
+        vector<double>& Vcur = result.V[nStep];
         Vcur[0] = V0;
         Vcur[N] = VN;
         for (int k = 0; k < n; ++k) Vcur[k + 1] = yInterior[k];
@@ -166,13 +167,13 @@ GridResult solve(const Option& opt, ExerciseStyle style, int N, int M, double Sm
     // --- Extraction du prix et des Greeks au noeud S0 (interpolation linéaire) ---
     const double S0 = opt.S0;
     int idx = static_cast<int>(S0 / dS);
-    idx = std::clamp(idx, 1, N - 2);   // marge pour les différences finies centrées
+    idx = clamp(idx, 1, N - 2);   // marge pour les différences finies centrées
     const double w = (S0 - result.S[idx]) / dS;
 
     const auto& V0slice = result.V[0];
     const auto& V1slice = result.V[1];
 
-    auto interp = [&](const std::vector<double>& slice, int i) {
+    auto interp = [&](const vector<double>& slice, int i) {
         return slice[i] * (1.0 - w) + slice[i + 1] * w;
     };
 

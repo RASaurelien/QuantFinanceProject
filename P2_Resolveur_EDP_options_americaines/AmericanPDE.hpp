@@ -2,6 +2,7 @@
 #include "Option.hpp"
 #include <vector>
 #include <limits>
+using namespace std;
 
 // ============================================================
 //  AmericanPDE.hpp
@@ -26,9 +27,9 @@
 enum class ExerciseStyle { European, American };
 
 struct GridResult {
-    std::vector<double> S;                        // grille spatiale (prix du sous-jacent)
-    std::vector<std::vector<double>> V;            // V[n][i] : valeur de l'option au pas de temps n, noeud S[i]
-    std::vector<double> exerciseBoundary;          // frontière d'exercice anticipé par pas de temps (NaN si aucune)
+    vector<double> S;                        // grille spatiale (prix du sous-jacent)
+    vector<vector<double>> V;            // V[n][i] : valeur de l'option au pas de temps n, noeud S[i]
+    vector<double> exerciseBoundary;          // frontière d'exercice anticipé par pas de temps (NaN si aucune)
     double dt = 0.0;
 
     double price = 0.0;

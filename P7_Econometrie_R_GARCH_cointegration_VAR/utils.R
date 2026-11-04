@@ -5,8 +5,7 @@
 # Fonctions partagées par les trois scripts d'économétrie, en
 # particulier le test de racine unitaire de Dickey-Fuller augmenté
 # (ADF), implémenté à la main plutôt qu'importé du package `urca`
-# (indisponible : pas d'accès à CRAN dans cet environnement -- voir
-# README). L'implémenter soi-même a aussi une vraie valeur pédagogique :
+# L'implémenter soi-même a aussi une vraie valeur pédagogique :
 # ça oblige à comprendre exactement ce que teste le test, pas juste à
 # lire une p-value produite par une boîte noire.
 # ============================================================

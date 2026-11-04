@@ -3,10 +3,9 @@
 # var_model.R
 # ===========
 # Modele VAR(1) bivarie -- estimation par OLS equation par equation
-# (forme matricielle explicite, pas le package `vars`, indisponible
-# sans acces a CRAN -- voir README) et fonctions de reponse
-# impulsionnelle (IRF) calculees a la main par recursion sur la
-# matrice compagnon.
+# (forme matricielle explicite, pas le package `vars`) 
+# et fonctions de reponse impulsionnelle (IRF) 
+# calculees par recursion sur la matrice compagnon.
 #
 #   x_t = A %*% x_{t-1} + eps_t,   eps_t ~ N(0, Sigma)
 #
@@ -85,7 +84,7 @@ cat("\n")
 #     IRF(h) = A^h %*% P
 # ou P est le facteur de Cholesky de Sigma (P P' = Sigma), qui
 # "orthogonalise" les chocs (un choc structurel a la fois, dans un
-# ordre causal suppose -- ici : la croissance reagit avant le taux).
+# ordre causal suppose ici : la croissance reagit avant le taux).
 compute_irf <- function(A, Sigma, horizon = 20) {
   P <- t(chol(Sigma))   # Cholesky : Sigma = P %*% t(P), P triangulaire inferieure
   n_vars <- nrow(A)

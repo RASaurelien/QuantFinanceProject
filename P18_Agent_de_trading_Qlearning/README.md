@@ -2,8 +2,7 @@
 
 Agent de Q-learning tabulaire sur un marché synthétique à changement de
 régime, avec entraînement et test sur des **simulations indépendantes**
-(seeds différentes) pour une vraie évaluation out-of-sample. Dernier
-projet de la roadmap, volontairement en priorité basse : le trading par
+(seeds différentes) pour une vraie évaluation out-of-sample. Le trading par
 RL est un terrain saturé, à edge non garanti, ce projet le traite avec
 la même rigueur méthodologique que le reste du dépôt plutôt que d'en
 survendre le résultat.

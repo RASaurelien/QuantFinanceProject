@@ -3,7 +3,8 @@ live_vol_surface.py,  Surface de volatilité live : SVI (par échéance) + SSVI 
 =========================================================================================
 Script unique, données options Yahoo Finance (yfinance), recalcul de l'IV à partir des prix (mid bid/ask), 
 calibration SVI par échéance,
-calibration SSVI globale sous contraintes de non-arbitrage, affichage 3D rafraîchi.
+calibration SSVI globale sous contraintes de non-arbitrage, affichage 3D orientable à la souris.
+Un thread de fond interroge Yahoo ; la surface n'est recalibrée et redessinée que si les cotations ont changé.
 
 Usage :
     python live_vol_surface.py                    # SPY, rafraîchi toutes les 30 s
@@ -18,8 +19,10 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import queue
 import subprocess
 import sys
+import threading
 import time
 from dataclasses import dataclass
 
@@ -256,28 +259,36 @@ def fetch_demo(symbol="DEMO", r=0.03, q=0.01, noise_bps=25.0):
 # ---------------------------------------------------------------------------
 
 
-def redraw(ax3, axs, spot, slices, ssvi, svis, idx, symbol):
+# Surface 3D, redessinée seulement quand de nouvelles données arrivent.
+# L'angle de vue est conservé : on peut la faire tourner à la souris (clic gauche), zoomer (clic droit).
+# Renvoie la courbe en surbrillance (échéance sélectionnée), mise à jour par draw_smile.
+def draw_surface(ax3, spot, slices, ssvi, svis, symbol):
     elev, azim = ax3.elev, ax3.azim
     ax3.clear()
     ax3.set_facecolor("#0b0d0f")
     kmax = max(np.abs(s["k"]).max() for s in slices)
     KK, TT = np.meshgrid(np.linspace(-kmax, kmax, 41), np.linspace(slices[0]["T"], slices[-1]["T"], 25))
     ax3.plot_surface(KK, TT, ssvi.iv(KK, TT), cmap="magma", alpha=0.55, linewidth=0)
-    ax3.plot_wireframe(KK, TT, ssvi.iv(KK, TT), color="#00f2ff", linewidth=0.4, alpha=0.6)
+    ax3.plot_wireframe(KK, TT, ssvi.iv(KK, TT), color="#00f2ff", linewidth=0.4, alpha=0.6, rstride=2, cstride=2)
     for s, sv in zip(slices, svis):
         ax3.scatter(s["k"], np.full(s["k"].size, s["T"]), s["iv"], c="#ff9f1c", s=6, depthshade=False)
         kk = np.linspace(-kmax, kmax, 60)
         ax3.plot(kk, np.full(kk.size, s["T"]), sv.iv(kk, s["T"]), color="#00ff88", lw=1)
+    hl, = ax3.plot([], [], [], color="white", lw=2.5)
     ax3.set_zlim(0, min(1.0, max(s["iv"].max() for s in slices) * 1.15))
     ax3.set_xlabel("log-moneyness ln(K/F)")
     ax3.set_ylabel("T (années)")
     ax3.set_zlabel("Vol. implicite")
     ok, v1, v2 = ssvi.arbitrage_check()
     ax3.set_title(f"{symbol} spot={spot:.2f} | SSVI rho={ssvi.rho:.2f} eta={ssvi.eta:.2f} g={ssvi.gamma:.2f} | "
-                  f"{'sans arbitrage (butterfly)' if ok else 'ATTENTION arbitrage'} | {time.strftime('%H:%M:%S')}",
+                  f"{'sans arbitrage (butterfly)' if ok else 'ATTENTION arbitrage'} | maj {time.strftime('%H:%M:%S')}",
                   fontsize=9)
     ax3.view_init(elev=elev, azim=azim)
+    return hl
 
+
+# Smile de l'échéance idx (panneau de droite) + surbrillance de cette échéance sur la surface 3D.
+def draw_smile(axs, slices, svis, ssvi, idx, hl):
     s, sv = slices[idx], svis[idx]
     kk = np.linspace(s["k"].min(), s["k"].max(), 100)
     axs.clear()
@@ -286,9 +297,38 @@ def redraw(ax3, axs, spot, slices, ssvi, svis, idx, symbol):
     axs.plot(kk, sv.iv(kk, s["T"]), color="#00ff88", label="SVI (échéance)")
     axs.plot(kk, ssvi.iv(kk, s["T"]), color="#00f2ff", ls="--", label="SSVI (globale)")
     axs.axvline(0, color="#ff3e3e", ls=":", label="Forward")
-    axs.set_title(f"Smile {s['expiry']}  (T={s['T']:.3f} a)", fontsize=10)
+    axs.set_title(f"Smile {s['expiry']}  (T={s['T']:.3f} a)  [{idx + 1}/{len(slices)}]", fontsize=10)
     axs.set_xlabel("ln(K/F)")
     axs.legend(fontsize=8)
+    kmax = max(np.abs(x["k"]).max() for x in slices)
+    k3 = np.linspace(-kmax, kmax, 60)
+    hl.set_data_3d(k3, np.full(k3.size, s["T"]), sv.iv(k3, s["T"]))
+
+
+# Empreinte des cotations, pour savoir si Yahoo a publié du nouveau.
+# IV arrondie à 4 décimales : ignore la petite dérive de T entre deux appels.
+def fingerprint(spot, slices):
+    return hash((round(spot, 2),) + tuple((s["expiry"], tuple(np.round(s["iv"], 4).tolist())) for s in slices))
+
+
+# Thread de fond : interroge la source toutes les `interval` s, recalibre seulement si les cotations ont changé
+# et dépose le résultat dans la file. Le tracé reste dans le thread principal (matplotlib n'est pas thread-safe).
+def poll_loop(st, q, fetch, a):
+    while not st["stop"]:
+        try:
+            spot, slices = fetch(a.symbol, a.rate, a.div)
+            fp = fingerprint(spot, slices)
+            if fp != st["fp"]:
+                svis = [fit_svi(s["k"], s["T"], s["iv"]) for s in slices]
+                q.put((spot, slices, fit_ssvi(slices), svis))
+                st["fp"] = fp
+            else:
+                print(f"[live] {time.strftime('%H:%M:%S')} pas de nouvelles cotations")
+        except Exception as exc:
+            print(f"[live] Rafraîchissement ignoré : {exc}")
+        t0 = time.time()
+        while not st["stop"] and time.time() - t0 < a.interval:
+            time.sleep(0.2)
 
 
 # ---------------------------------------------------------------------------
@@ -448,46 +488,59 @@ def main():
     fig.patch.set_facecolor("#0b0d0f")
     ax3 = plt.subplot2grid((1, 3), (0, 0), colspan=2, projection="3d")
     axs = plt.subplot2grid((1, 3), (0, 2))
-    st = {"lock": False, "idx": 0, "data": None}
+    ax3.set_facecolor("#0b0d0f")
+    ax3.text2D(0.5, 0.5, "Chargement des cotations...", transform=ax3.transAxes, ha="center", color="white")
+    st = {"lock": False, "sel": None, "fp": None, "data": None, "hl": None, "stop": False}
+    q = queue.Queue()
 
-    b1 = Button(plt.axes([0.30, 0.03, 0.12, 0.04]), "LOCK UPDATES", color="#1f2329", hovercolor="#2d333b")
-    b2 = Button(plt.axes([0.45, 0.03, 0.12, 0.04]), "NEXT EXPIRY", color="#1f2329", hovercolor="#2d333b")
+    b1 = Button(plt.axes([0.30, 0.03, 0.11, 0.04]), "LOCK UPDATES", color="#1f2329", hovercolor="#2d333b")
+    b2 = Button(plt.axes([0.43, 0.03, 0.11, 0.04]), "PREV EXPIRY", color="#1f2329", hovercolor="#2d333b")
+    b3 = Button(plt.axes([0.56, 0.03, 0.11, 0.04]), "NEXT EXPIRY", color="#1f2329", hovercolor="#2d333b")
 
     def toggle(_):
         st["lock"] = not st["lock"]
         b1.label.set_text("UNLOCK UPDATES" if st["lock"] else "LOCK UPDATES")
 
-    def nxt(_):
-        st["idx"] += 1
-        draw()
+    # Position de l'échéance choisie, retrouvée par son libellé : elle reste la même après un rafraîchissement.
+    def cur():
+        names = [s["expiry"] for s in st["data"][1]]
+        return names.index(st["sel"]) if st["sel"] in names else 0
 
-    def draw():
+    def show_smile():
+        spot, slices, ssvi, svis = st["data"]
+        i = cur()
+        st["sel"] = slices[i]["expiry"]
+        draw_smile(axs, slices, svis, ssvi, i, st["hl"])
+        fig.canvas.draw_idle()
+
+    def step(d):
         if st["data"]:
-            spot, slices, ssvi, svis = st["data"]
-            redraw(ax3, axs, spot, slices, ssvi, svis, st["idx"] % len(slices), a.symbol)
-            fig.canvas.draw_idle()
+            st["sel"] = st["data"][1][(cur() + d) % len(st["data"][1])]["expiry"]
+            show_smile()
 
     b1.on_clicked(toggle)
-    b2.on_clicked(nxt)
+    b2.on_clicked(lambda _: step(-1))
+    b3.on_clicked(lambda _: step(1))
 
     plt.ion()
     plt.show(block=False)
-    last = 0.0
+    threading.Thread(target=poll_loop, args=(st, q, fetch, a), daemon=True).start()
     print(f"[live] {a.symbol} - Ctrl+C ou fermer la fenêtre pour arrêter.")
     try:
         while plt.fignum_exists(fig.number):
-            if not st["lock"] and time.time() - last >= a.interval:
-                last = time.time()
-                try:
-                    spot, slices = fetch(a.symbol, a.rate, a.div)
-                    svis = [fit_svi(s["k"], s["T"], s["iv"]) for s in slices]
-                    st["data"] = (spot, slices, fit_ssvi(slices), svis)
-                    draw()
-                except Exception as exc:
-                    print(f"[live] Rafraîchissement ignoré : {exc}")
-            plt.pause(0.2)
+            if not st["lock"] and not q.empty():
+                new = None
+                while not q.empty():  # on ne garde que la plus récente
+                    new = q.get_nowait()
+                st["data"] = new
+                st["hl"] = draw_surface(ax3, new[0], new[1], new[2], new[3], a.symbol)
+                show_smile()
+                print(f"[live] {time.strftime('%H:%M:%S')} surface mise à jour")
+            plt.pause(0.05)
     except KeyboardInterrupt:
         pass
+    finally:
+        st["stop"] = True
 
 
 if __name__ == "__main__":

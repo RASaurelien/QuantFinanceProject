@@ -8,6 +8,8 @@
 #include <omp.h>
 #endif
 
+using namespace std;
+
 namespace MonteCarlo {
 
 // ------------------------------------------------------------
@@ -28,8 +30,8 @@ static void simulateSum(const Option& opt, long nPaths, unsigned seed,
                          double& outSum, double& outSumSq)
 {
     const double drift = (opt.r - opt.q - 0.5 * opt.sigma * opt.sigma) * opt.T;
-    const double diffusion = opt.sigma * std::sqrt(opt.T);
-    const double discount = std::exp(-opt.r * opt.T);
+    const double diffusion = opt.sigma * sqrt(opt.T);
+    const double discount = exp(-opt.r * opt.T);
     const bool isCall = (opt.type == OptionType::Call);
     const double K = opt.K;
 
@@ -49,8 +51,8 @@ static void simulateSum(const Option& opt, long nPaths, unsigned seed,
         const int tid = 0;
         #endif
 
-        std::mt19937_64 rng(seed + static_cast<unsigned>(tid) * 7919u); // 7919 premier: espace bien les flux
-        std::normal_distribution<double> stdNormal(0.0, 1.0);
+        mt19937_64 rng(seed + static_cast<unsigned>(tid) * 7919u); // 7919 premier: espace bien les flux
+        normal_distribution<double> stdNormal(0.0, 1.0);
 
         const long pairsTotal = nPaths / 2;               // on travaille par paires antithétiques
         const long pairsPerThread = pairsTotal / nThreads;
@@ -63,14 +65,14 @@ static void simulateSum(const Option& opt, long nPaths, unsigned seed,
             const double z = stdNormal(rng);
 
             // Trajectoire "normale"
-            const double ST1 = opt.S0 * std::exp(drift + diffusion * z);
+            const double ST1 = opt.S0 * exp(drift + diffusion * z);
             // Trajectoire antithétique (miroir -z) : corrèle
             // négativement l'erreur et réduit la variance sans
             // biaiser l'estimateur (l'espérance de -Z est la même).
-            const double ST2 = opt.S0 * std::exp(drift - diffusion * z);
+            const double ST2 = opt.S0 * exp(drift - diffusion * z);
 
-            const double payoff1 = isCall ? std::max(ST1 - K, 0.0) : std::max(K - ST1, 0.0);
-            const double payoff2 = isCall ? std::max(ST2 - K, 0.0) : std::max(K - ST2, 0.0);
+            const double payoff1 = isCall ? max(ST1 - K, 0.0) : max(K - ST1, 0.0);
+            const double payoff2 = isCall ? max(ST2 - K, 0.0) : max(K - ST2, 0.0);
 
             // Moyenne de la paire : c'est CE couple qui constitue
             // un seul "tirage" pour l'estimateur antithétique.
@@ -97,7 +99,7 @@ PricingResult price(const Option& opt, long nPaths, unsigned seed) {
     const long nSamples = nPaths / 2;  // une paire antithétique = un échantillon
     const double mean = sum / nSamples;
     const double variance = (sumSq / nSamples) - (mean * mean);
-    const double stderrEst = std::sqrt(std::max(variance, 0.0) / nSamples);
+    const double stderrEst = sqrt(max(variance, 0.0) / nSamples);
 
     PricingResult res;
     res.price = mean;
@@ -157,7 +159,7 @@ PricingResult priceWithGreeks(const Option& opt, long nPaths, unsigned seed) {
     const long nSamples = nPaths / 2;
     const double mean = s0 / nSamples;
     const double variance = (sq0 / nSamples) - (mean * mean);
-    res.stderr_ = std::sqrt(std::max(variance, 0.0) / nSamples);
+    res.stderr_ = sqrt(max(variance, 0.0) / nSamples);
 
     return res;
 }

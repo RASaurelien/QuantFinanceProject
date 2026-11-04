@@ -13,7 +13,7 @@ La variance réalisée "naïve" (somme des rendements au carré) est
 l'estimateur manuel le plus intuitif de la variance intégrée, mais en
 présence de bruit de microstructure (bid-ask bounce, décalages de
 cotation), **elle diverge quand on échantillonne trop finement** : plus on
-utilise de données, pire c'est. C'est un résultat contre-intuitif et
+utilise de données, pire c'est un résultat contre-intuitif et
 central en finance haute fréquence, illustré par le "signature plot".
 Ce projet ne se contente pas de l'expliquer : il le **démontre
 numériquement**, puis implémente et valide l'estimateur qui corrige ce

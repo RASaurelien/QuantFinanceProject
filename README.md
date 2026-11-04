@@ -1,17 +1,11 @@
 HERE:
 You will find around 30 projects here. 
 
-Most are written in Python, which is where I started due to its versatility. 
-
-To better understand memory management and code interpretation, and because speed can be a major edge in quantitative finance,
-i also built projects in C++ and Rust. 
-
-Additionally, I explored R for data science applications.
+Most are written in Python, and some are in C++, Rust, R and VBA. 
 
 As I learned quickly, and being early in my journey, 
 I wanted to optimize these projects and make the code cleaner, faster, and more readable. 
-
-I used GitHub Copilot to refine certain parts, though it was mainly used for debugging within Visual Studio Code.
+For those reason, i used GitHub Copilot to refine certain parts, though it was mainly used for debugging within Visual Studio Code.
 
 ## PROJECTS
 

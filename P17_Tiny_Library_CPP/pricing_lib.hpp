@@ -3,6 +3,7 @@
 #include <random>
 #include <vector>
 #include <numeric>
+using namespace std;
 
 // ============================================================
 //  pricing_lib.hpp
@@ -22,7 +23,7 @@
 //  pas voir a travers.
 //
 //  C'est le meme principe que la Standard Template Library ou Eigen :
-//  "zero-cost abstraction" -- le code generique ne coute rien de plus
+//  "zero-cost abstraction" le code generique ne coute rien de plus
 //  qu'une version ecrite a la main, une fois compile.
 // ============================================================
 
@@ -30,12 +31,12 @@
 // Le compilateur genere un moteur different pour chaque payoff.
 struct CallPayoff {
     double strike;
-    double operator()(double S) const { return std::max(S - strike, 0.0); }
+    double operator()(double S) const { return max(S - strike, 0.0); }
 };
 
 struct PutPayoff {
     double strike;
-    double operator()(double S) const { return std::max(strike - S, 0.0); }
+    double operator()(double S) const { return max(strike - S, 0.0); }
 };
 
 struct DigitalCallPayoff {
@@ -47,9 +48,9 @@ struct DigitalCallPayoff {
 // --- Payoff path-dependant : recoit tout le chemin, pas juste S_T ---
 struct AsianCallPayoff {
     double strike;
-    double operator()(const std::vector<double>& path) const {
-        double avg = std::accumulate(path.begin(), path.end(), 0.0) / path.size();
-        return std::max(avg - strike, 0.0);
+    double operator()(const vector<double>& path) const {
+        double avg = accumulate(path.begin(), path.end(), 0.0) / path.size();
+        return max(avg - strike, 0.0);
     }
 };
 
@@ -59,16 +60,16 @@ struct BlackScholesModel {
 
     // Genere UNE trajectoire complete (n_steps points), pour les payoffs path-dependants.
     template <typename RNG>
-    std::vector<double> simulate_path(int n_steps, RNG& rng) const {
-        std::normal_distribution<double> normal(0.0, 1.0);
+    vector<double> simulate_path(int n_steps, RNG& rng) const {
+        normal_distribution<double> normal(0.0, 1.0);
         double dt = T / n_steps;
         double drift = (r - q - 0.5 * sigma * sigma) * dt;
-        double diffusion = sigma * std::sqrt(dt);
+        double diffusion = sigma * sqrt(dt);
 
-        std::vector<double> path(n_steps + 1);
+        vector<double> path(n_steps + 1);
         path[0] = S0;
         for (int i = 1; i <= n_steps; ++i) {
-            path[i] = path[i - 1] * std::exp(drift + diffusion * normal(rng));
+            path[i] = path[i - 1] * exp(drift + diffusion * normal(rng));
         }
         return path;
     }
@@ -76,13 +77,13 @@ struct BlackScholesModel {
     // Terminal seul (plus rapide quand le payoff ne depend que de S_T)
     template <typename RNG>
     double simulate_terminal(RNG& rng) const {
-        std::normal_distribution<double> normal(0.0, 1.0);
+        normal_distribution<double> normal(0.0, 1.0);
         double drift = (r - q - 0.5 * sigma * sigma) * T;
-        double diffusion = sigma * std::sqrt(T);
-        return S0 * std::exp(drift + diffusion * normal(rng));
+        double diffusion = sigma * sqrt(T);
+        return S0 * exp(drift + diffusion * normal(rng));
     }
 
-    double discount() const { return std::exp(-r * T); }
+    double discount() const { return exp(-r * T); }
 };
 
 // --- Moteur Monte Carlo generique : Model x Payoff resolus a la compilation ---
@@ -95,10 +96,10 @@ public:
         : model_(model), payoff_(payoff), n_paths_(n_paths), seed_(seed) {}
 
     double price() const {
-        std::mt19937_64 rng(seed_);
+        mt19937_64 rng(seed_);
         double sum = 0.0;
 
-        if constexpr (std::is_invocable_v<Payoff, double>) {
+        if constexpr (is_invocable_v<Payoff, double>) {
             // Payoff terminal (Call, Put, Digital...) : plus rapide, pas de stockage de chemin.
             for (int i = 0; i < n_paths_; ++i) {
                 double ST = model_.simulate_terminal(rng);
@@ -143,11 +144,11 @@ struct IPayoffVirtual {
 struct CallPayoffVirtual : IPayoffVirtual {
     double strike;
     explicit CallPayoffVirtual(double k) : strike(k) {}
-    double operator()(double S) const override { return std::max(S - strike, 0.0); }
+    double operator()(double S) const override { return max(S - strike, 0.0); }
 };
 
 double price_virtual(const BlackScholesModel& model, const IPayoffVirtual& payoff, int n_paths, unsigned seed = 42) {
-    std::mt19937_64 rng(seed);
+    mt19937_64 rng(seed);
     double sum = 0.0;
     for (int i = 0; i < n_paths; ++i) {
         double ST = model.simulate_terminal(rng);

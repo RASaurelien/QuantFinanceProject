@@ -4,8 +4,7 @@
 # =======
 # Modele GARCH(1,1), simule ET estime PAR MAXIMUM DE VRAISEMBLANCE
 # implemente a la main (optim() sur la log-vraisemblance gaussienne),
-# plutot qu'avec le package `rugarch` (indisponible sans acces a
-# CRAN dans cet environnement -- voir README).
+# plutot qu'avec le package `rugarch`.
 #
 #   r_t        = sigma_t * z_t,          z_t ~ N(0,1) iid
 #   sigma_t^2  = omega + alpha*r_{t-1}^2 + beta*sigma_{t-1}^2

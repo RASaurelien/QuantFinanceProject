@@ -68,8 +68,13 @@ def main():
 
     fig, axes = plt.subplots(1, 2, figsize=(12, 4.5))
     t_grid = np.linspace(0, T, N + 1)
+    # The AC curve is drawn last, thick and dashed, on top: with this lambda it is almost
+    # linear and identical to the rho=1000 curve, so it would otherwise be hidden under it.
+    ac_label = "Almgren-Chriss (closed form)"
     for label, x in trajectories.items():
-        axes[0].plot(t_grid, x, marker="o", markersize=3, label=label)
+        if label != ac_label:
+            axes[0].plot(t_grid, x, marker="o", markersize=3, label=label)
+    axes[0].plot(t_grid, trajectories[ac_label], "k--", lw=2.5, zorder=10, label=ac_label)
     axes[0].set_xlabel("time")
     axes[0].set_ylabel("remaining shares to sell")
     axes[0].set_title("Optimal liquidation trajectories")

@@ -1,7 +1,6 @@
 # Modélisation du carnet d'ordres par processus de Hawkes
 
-**Langage : Python** (numpy/scipy — simulation exacte et vraisemblance
-codées à la main, `scipy.optimize` uniquement pour l'optimisation
+**Langage : Python** (numpy/scipy, `scipy.optimize` uniquement pour l'optimisation
 numérique finale du MLE).
 
 ## 1. Objectif
@@ -15,7 +14,7 @@ marché (Bacry, Mastromatteo & Muzy 2015).
 déclenche d'autres à court terme), et l'**excitation croisée** entre
 flux acheteur et vendeur.
 
-## 2. Modèle — `hawkes.py`
+## 2. Modèle, `hawkes.py`
 
 Noyau exponentiel à décroissance **partagée** `β` entre toutes les
 paires (source, cible), une simplification qui rend le calcul exact
@@ -52,7 +51,7 @@ exacte tournent donc en `O(N)`, pas `O(N²)`.
 2. **MLE univarié** : récupère `(μ,α,β)=(0.5, 0.6, 2.0)` à partir des
    données simulées → `(0.516, 0.586, 2.061)`.
 
-## 3. Application — flux d'ordres achat/vente — `experiment.py`
+## 3. Application, flux d'ordres achat/vente, `experiment.py`
 
 Modèle bivarié : auto-excitation sur chaque côté (momentum/herding),
 plus excitation croisée (un achat peut déclencher des ventes, ex.
