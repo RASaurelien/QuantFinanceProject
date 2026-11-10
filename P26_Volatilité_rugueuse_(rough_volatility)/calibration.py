@@ -154,10 +154,14 @@ def main():
         skew_hat = (iv_hat[2] - iv_hat[0]) / (Kskew[2] - Kskew[0])
         print(f"{Tc:>6.2f}{skew_true:>16.5f}{skew_hat:>22.5f}")
 
+    print("statut:", result.status, "| nfev:", result.nfev)
+    print("x_hat:", np.round(x_hat, 6))
+    rmse_noise = 1e4 * np.sqrt(np.mean(noise ** 2))
+    print(f"RMSE du bruit seul: {rmse_noise:.1f} bp")
+
     return dict(true=dict(zip(PARAM_NAMES, true_vec)),
                 recovered=dict(zip(PARAM_NAMES, x_hat)),
                 rmse_bp=rmse_bp)
-
 
 if __name__ == "__main__":
     main()

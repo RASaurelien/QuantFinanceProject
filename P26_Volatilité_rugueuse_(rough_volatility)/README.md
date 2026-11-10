@@ -88,34 +88,42 @@ Cela confirme qu'il n'y a pas d'artefact dans l'inversion de Fourier.
 
 On génère un smile "marché" synthétique
 avec des paramètres **connus** (`H=0.10, λ=1.5, θ=0.05, ν=0.4, ρ=−0.7`),
-puis on y ajoute un bruit d'environ 15 bp.
+puis on y ajoute un bruit gaussien de 15 bp d'écart-type
+(10.2 bp de bruit réalisé sur les 9 strikes, graine fixée).
 
 On recalibre ensuite par moindres carrés non linéaires
 (`scipy.optimize.least_squares`, avec bornes),
-depuis un point de départ volontairement éloigné de la vérité.
+depuis un point de départ volontairement éloigné de la vérité
+(`H=0.25, λ=1.0, θ=0.035, ν=0.7, ρ=−0.3`).
 
 ### Résultat
 
-| Paramètre | Vrai | Recouvré | Erreur abs. |
-|---|---:|---:|---:|
-| H | 0.100 | **0.027** | 0.073 |
-| λ | 1.500 | 1.704 | 0.204 |
-| θ | 0.050 | 0.049 | 0.001 |
-| ν | 0.400 | 0.370 | 0.030 |
-| ρ | −0.700 | −0.691 | 0.009 |
+| Paramètre | Vrai | Recouvré | Erreur abs. | Erreur rel. |
+|---|---:|---:|---:|---:|
+| H | 0.100 | **0.057** | 0.043 | 43 % |
+| λ | 1.500 | **1.041** | 0.459 | 31 % |
+| θ | 0.050 | 0.052 | 0.002 | 4 % |
+| ν | 0.400 | **0.497** | 0.097 | 24 % |
+| ρ | −0.700 | −0.695 | 0.005 | 1 % |
 
-**RMSE de calibration : 8.5 bp de vol implicite**
-(ajustement quasi parfait, voir `calibration_fit.png`).
-En revanche, `H` est reconstruit très loin de sa vraie valeur,
-alors que `θ`, `ν` et `ρ` sont bien retrouvés.
+**RMSE de calibration : 8.8 bp de vol implicite**,
+à comparer aux 10.2 bp de bruit injecté :
+le modèle colle aux données au niveau du bruit,
+sans le sur-ajuster (voir `calibration_fit.png`).
+L'optimiseur converge en 8 évaluations (critère `gtol`).
+
+`θ` et `ρ` sont bien retrouvés.
+En revanche `H`, `λ` et `ν` sont reconstruits
+avec 25 à 45 % d'erreur,
+tout en reproduisant le smile aussi bien que les vrais paramètres.
 
 ![calibration](calibration_fit.png)
 
 ## 5. Discussion : non-identifiabilité, pas un bug
 
 L'optimiseur n'a pas échoué :
-le coût final est quasi nul,
-donc `(H=0.027, λ=1.70, ...)` explique le smile en `T=0.5`
+l'ajustement est au niveau du bruit,
+donc `(H=0.057, λ=1.04, ν=0.50, ...)` explique le smile en `T=0.5`
 **aussi bien** que les vrais paramètres.
 
 Cela colle avec un point bien documenté
@@ -126,13 +134,22 @@ du skew ATM en fonction de la maturité* (`skew(T) ~ T^{H−1/2}`, Fukasawa),
 pas sur la forme d'une coupe isolée,
 où `λ` et `ν` le compensent largement.
 
+Deux indices vont dans ce sens :
+
+- `H`, `λ` et `ν` s'écartent ensemble de leurs vraies valeurs,
+  alors que `θ` et `ρ` restent stables.
+- Le minimum est plat : avec d'autres réglages de l'optimiseur,
+  une exécution antérieure s'était arrêtée à `H=0.027`.
+  La valeur de `H` dépend de l'endroit où l'optimiseur s'arrête
+  dans la vallée, pas de la qualité de l'ajustement.
+
 Un diagnostic complémentaire est fourni dans `calibration.py`.
-Il compare le skew ATM des deux jeux de paramètres
-à d'autres maturités que celle calibrée (`T=0.1` à `2.0`).
-Il reste **non concluant**
-dans la fenêtre de maturités numériquement stable avec les réglages actuels :
-le schéma explicite devient instable pour `T ≳ 1` sans augmenter `n_steps`,
-et les deux skews restent proches, même à `T=0.1`.
+Il compare le skew ATM des vrais paramètres et des paramètres recouvrés
+à d'autres maturités que celle calibrée.
+À `T=1`, les deux skews sont quasi identiques
+(−0.00281 contre −0.00286),
+donc ce test ne sépare pas encore les deux jeux de paramètres.
+À `T=2`, le schéma explicite devient instable et renvoie `nan`.
 
 C'est une limite de cette implémentation, et je préfère la dire clairement.
 Pour conclure proprement sur l'identifiabilité de `H`, il faudrait :
@@ -182,6 +199,7 @@ python calibration.py      # calibration complète + graphique
 - Heston, *A Closed-Form Solution for Options with Stochastic Volatility*,
   Review of Financial Studies 6(2), 1993 (décomposition P1/P2)
 
-## Complexité :
-O(N²) naïf / O(N log N) optimisé	
-Équation de Riccati fractionnaire = convolution à mémoire longue ; accélérable par FFT
+## Complexité
+
+O(N²) naïf / O(N log N) optimisé.
+Équation de Riccati fractionnaire = convolution à mémoire longue, accélérable par FFT.
